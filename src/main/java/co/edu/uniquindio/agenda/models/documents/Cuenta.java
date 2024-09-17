@@ -2,6 +2,7 @@ package co.edu.uniquindio.agenda.models.documents;
 
 import co.edu.uniquindio.agenda.models.enums.EstadoCuenta;
 import co.edu.uniquindio.agenda.models.enums.Rol;
+import co.edu.uniquindio.agenda.models.enums.TipoDocumento;
 import co.edu.uniquindio.agenda.models.vo.CodigoValidacion;
 import co.edu.uniquindio.agenda.models.vo.Usuario;
 import lombok.*;
@@ -24,6 +25,9 @@ public class Cuenta {
     private String email;
     private CodigoValidacion codigoValidacionRegistro;
     private Usuario usuario;
+    private TipoDocumento tipoDocumento;
+    private String nroDocumento;
+    private String telefono;
     private LocalDateTime fechaRegistro;
     private String password;
     private EstadoCuenta estado;
