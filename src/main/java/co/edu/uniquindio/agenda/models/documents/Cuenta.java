@@ -1,12 +1,14 @@
 package co.edu.uniquindio.agenda.models.documents;
 
 import co.edu.uniquindio.agenda.models.enums.EstadoCuenta;
+import co.edu.uniquindio.agenda.models.enums.NivelAcceso;
 import co.edu.uniquindio.agenda.models.enums.Rol;
 import co.edu.uniquindio.agenda.models.enums.TipoDocumento;
 import co.edu.uniquindio.agenda.models.vo.CodigoValidacion;
 import co.edu.uniquindio.agenda.models.vo.Usuario;
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -15,7 +17,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
+@ToString(exclude = "usuario")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Cuenta {
     @Id
@@ -24,12 +26,12 @@ public class Cuenta {
     private Rol rol;
     private String email;
     private CodigoValidacion codigoValidacionRegistro;
+    //@DBRef
     private Usuario usuario;
-    private TipoDocumento tipoDocumento;
-    private String nroDocumento;
     private String telefono;
     private LocalDateTime fechaRegistro;
     private String password;
     private EstadoCuenta estado;
     private CodigoValidacion codigoValidacionPassword;
+    private NivelAcceso nivelAcceso;
 }
