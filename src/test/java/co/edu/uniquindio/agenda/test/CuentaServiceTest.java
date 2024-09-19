@@ -1,10 +1,13 @@
 package co.edu.uniquindio.agenda.test;
 
 import co.edu.uniquindio.agenda.dto.cuenta.CrearCuentaPacienteDTO;
+import co.edu.uniquindio.agenda.dto.cuenta.CrearCuentaProfesionalDTO;
 import co.edu.uniquindio.agenda.exceptions.cuenta.CuentaNoCreadaException;
 import co.edu.uniquindio.agenda.models.documents.Cuenta;
+import co.edu.uniquindio.agenda.models.documents.Especialidad;
 import co.edu.uniquindio.agenda.models.enums.*;
 import co.edu.uniquindio.agenda.services.interfaces.ICuentaService;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +22,7 @@ public class CuentaServiceTest {
     private ICuentaService cuentaService;
 
     @Test
-    public void crearCuentaTest() throws CuentaNoCreadaException {
+    public void crearCuentaPacienteTest() throws CuentaNoCreadaException {
         CrearCuentaPacienteDTO registrarCuentaPaciente = new CrearCuentaPacienteDTO(
                 TipoDocumento.CC.getValue(),
                 "34489784",
@@ -39,6 +42,24 @@ public class CuentaServiceTest {
         );
 
         Cuenta cuentaCreada = cuentaService.crearCuentaPaciente(registrarCuentaPaciente);
+        Assertions.assertNotNull(cuentaCreada);
+    }
+
+    @Test
+    public void crearCuentaProfesionalTest() throws CuentaNoCreadaException {
+        CrearCuentaProfesionalDTO registrarCuentaProfesional = new CrearCuentaProfesionalDTO(
+                TipoDocumento.CC.getValue(),
+                "4782365489",
+                "7425896",
+                "Maria Claudia",
+                "Curtidor",
+                "Granada",
+                new ObjectId("66eb9db95e23cd4478146a7b"),
+                "mariacurtidor@gmail.com",
+                "789635"
+        );
+
+        Cuenta cuentaCreada = cuentaService.crearCuentaProfesional(registrarCuentaProfesional);
         Assertions.assertNotNull(cuentaCreada);
     }
 }

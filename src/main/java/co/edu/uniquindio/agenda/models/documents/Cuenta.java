@@ -26,12 +26,11 @@ public class Cuenta {
     private Rol rol;
     private String email;
     private CodigoValidacion codigoValidacionRegistro;
-    //@DBRef
     private Usuario usuario;
     private String telefono;
     private LocalDateTime fechaRegistro;
     private String password;
     private EstadoCuenta estado;
     private CodigoValidacion codigoValidacionPassword;
-    private NivelAcceso nivelAcceso;
+    private String nivelAcceso;
 }
