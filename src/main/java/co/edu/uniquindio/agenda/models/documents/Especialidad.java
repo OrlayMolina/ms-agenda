@@ -16,4 +16,8 @@ public class Especialidad {
     @EqualsAndHashCode.Include
     private String id;
     private String nombre;
+
+    public Especialidad(String nombre) {
+        this.nombre = nombre;
+    }
 }
