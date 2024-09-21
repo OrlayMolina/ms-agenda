@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Length;
 import java.time.LocalDateTime;
 
 public record CrearCuentaPacienteDTO(
-        @NotNull String tipoDocumento,
+        @NotBlank String tipoDocumento,
         @NotBlank @Length(max = 15) String nroDocumento,
         @NotBlank @Length(max = 10) String telefono,
         @NotBlank @Length(max = 15) String nombres,

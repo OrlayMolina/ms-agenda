@@ -23,7 +23,7 @@ public class Cuenta {
     @Id
     @EqualsAndHashCode.Include
     private String id;
-    private Rol rol;
+    private String rol;
     private String email;
     private CodigoValidacion codigoValidacionRegistro;
     private Usuario usuario;

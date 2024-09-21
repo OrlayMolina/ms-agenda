@@ -2,7 +2,10 @@ package co.edu.uniquindio.agenda.test;
 
 import co.edu.uniquindio.agenda.dto.cuenta.CrearCuentaPacienteDTO;
 import co.edu.uniquindio.agenda.dto.cuenta.CrearCuentaProfesionalDTO;
+import co.edu.uniquindio.agenda.dto.cuenta.ItemProfesionalDTO;
+import co.edu.uniquindio.agenda.dto.especialidad.ItemEspecialidadDTO;
 import co.edu.uniquindio.agenda.exceptions.cuenta.CuentaNoCreadaException;
+import co.edu.uniquindio.agenda.exceptions.cuenta.ProfesionalesNoEncontradosException;
 import co.edu.uniquindio.agenda.models.documents.Cuenta;
 import co.edu.uniquindio.agenda.models.documents.Especialidad;
 import co.edu.uniquindio.agenda.models.enums.*;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @SpringBootTest
 public class CuentaServiceTest {
@@ -61,5 +65,14 @@ public class CuentaServiceTest {
 
         Cuenta cuentaCreada = cuentaService.crearCuentaProfesional(registrarCuentaProfesional);
         Assertions.assertNotNull(cuentaCreada);
+    }
+
+    @Test
+    public void listarProfesionalesTest() throws ProfesionalesNoEncontradosException {
+        List<ItemProfesionalDTO> mostrarProfesionales = cuentaService.listarProfesionales();
+
+        Assertions.assertNotNull(mostrarProfesionales);
+
+        mostrarProfesionales.forEach(System.out::println);
     }
 }

@@ -2,16 +2,17 @@ package co.edu.uniquindio.agenda.controllers;
 
 import co.edu.uniquindio.agenda.dto.cuenta.CrearCuentaPacienteDTO;
 import co.edu.uniquindio.agenda.dto.cuenta.CrearCuentaProfesionalDTO;
+import co.edu.uniquindio.agenda.dto.cuenta.ItemProfesionalDTO;
 import co.edu.uniquindio.agenda.dto.cuenta.MensajeDTO;
 import co.edu.uniquindio.agenda.exceptions.cuenta.CuentaNoCreadaException;
+import co.edu.uniquindio.agenda.exceptions.cuenta.ProfesionalesNoEncontradosException;
 import co.edu.uniquindio.agenda.services.interfaces.ICuentaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,5 +39,10 @@ public class CuentaController {
         } catch (Exception e){
             throw new CuentaNoCreadaException("El profesional no fue creado " + e.getMessage());
         }
+    }
+
+    @GetMapping("/listar-profesionales")
+    public ResponseEntity<MensajeDTO<List<ItemProfesionalDTO>>> listarProfesionales() throws ProfesionalesNoEncontradosException {
+        return ResponseEntity.ok().body( new MensajeDTO<>(false, cuentaService.listarProfesionales()) );
     }
 }
