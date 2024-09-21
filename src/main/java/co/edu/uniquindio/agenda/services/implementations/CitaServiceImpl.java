@@ -4,17 +4,18 @@ import co.edu.uniquindio.agenda.dto.cita.*;
 import co.edu.uniquindio.agenda.exceptions.cita.*;
 import co.edu.uniquindio.agenda.exceptions.cuenta.CuentaNoEncontradaException;
 import co.edu.uniquindio.agenda.exceptions.cuenta.ProfesionalesNoEncontradosException;
+import co.edu.uniquindio.agenda.exceptions.especialidad.EspecialidadNoEncontradaException;
 import co.edu.uniquindio.agenda.exceptions.sede.SedeNoEncontradaException;
 import co.edu.uniquindio.agenda.models.documents.Cita;
 import co.edu.uniquindio.agenda.models.documents.Cuenta;
+import co.edu.uniquindio.agenda.models.documents.Especialidad;
 import co.edu.uniquindio.agenda.models.documents.Sede;
-import co.edu.uniquindio.agenda.models.enums.Ciudad;
-import co.edu.uniquindio.agenda.models.enums.Departamento;
 import co.edu.uniquindio.agenda.models.enums.EstadoCita;
 import co.edu.uniquindio.agenda.models.vo.Paciente;
 import co.edu.uniquindio.agenda.models.vo.Profesional;
 import co.edu.uniquindio.agenda.repository.ICitaRepository;
 import co.edu.uniquindio.agenda.repository.ICuentaRepository;
+import co.edu.uniquindio.agenda.repository.IEspecialidadRepository;
 import co.edu.uniquindio.agenda.repository.ISedeRepository;
 import co.edu.uniquindio.agenda.services.interfaces.ICitaService;
 import co.edu.uniquindio.agenda.utils.GenerarCodigo;
@@ -34,6 +35,7 @@ public class CitaServiceImpl implements ICitaService {
     private final ICuentaRepository cuentaRepository;
     private final ICitaRepository citaRepository;
     private final ISedeRepository sedeRepository;
+    private final IEspecialidadRepository especialidadRepository;
     private final GenerarCodigo generarCodigo;
     @Override
     public String crearCitaMedica(CrearCitaDTO crearCitaDTO) throws CitaNoCreadaException {
@@ -86,13 +88,13 @@ public class CitaServiceImpl implements ICitaService {
         try {
             Cita cita = encontrarCitaPorId( idCita );
             Paciente paciente = encontrarPacientePorId( cita.getIdPaciente().toHexString() );
-            Sede sede = encontrarSedePorId( "66ed9b9d33719f5396d8490c" );
+            Sede sede = encontrarSedePorId( cita.getIdSede().toHexString() );
+
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+            String fechaCita = cita.getFechaCita().format(dateFormatter);
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
             String horaCita = cita.getFechaCita().format(formatter);
-
-            Departamento departamento = sede.getDepartamento();
-            Ciudad ciudad = sede.getCiudad();
 
             return new InformacionCitaDTO(
                     cita.getId(),
@@ -102,10 +104,8 @@ public class CitaServiceImpl implements ICitaService {
                     paciente.getNroDocumento(),
                     paciente.getCelular(),
                     sede.getNombre(),
-                    false,
-                    cita.getFechaCita(),
-                    "Dermatologia",
-                    "20 Minutos",
+                    cita.isConfirmada(),
+                    fechaCita,
                     horaCita,
                     cita.getConsultorio(),
                     cita.getComentarios(),
@@ -207,6 +207,20 @@ public class CitaServiceImpl implements ICitaService {
 
         } catch (Exception e){
             throw new ProfesionalesNoEncontradosException("El profesional no fue encontrado " + e.getMessage());
+        }
+    }
+
+    private Especialidad encontrarEspecialidadPorId( String id ) throws EspecialidadNoEncontradaException{
+        try {
+            Optional<Especialidad> especialidad = especialidadRepository.findById( id );
+
+            if( especialidad.isEmpty() ){
+                throw new EspecialidadNoEncontradaException("Especialidad de la cita no encontrada.");
+            }
+
+            return especialidad.get();
+        } catch (Exception e){
+            throw  new EspecialidadNoEncontradaException("Error al tratar de encontrar la especialidad asociada a la cita. " + e.getMessage());
         }
     }
 }

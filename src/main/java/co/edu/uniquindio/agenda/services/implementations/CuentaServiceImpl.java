@@ -96,7 +96,7 @@ public class CuentaServiceImpl implements ICuentaService {
                 throw new Exception("La cédula " + cuenta.nroDocumento()+ " ya existe");
             }
 
-            if (cuenta.especialidad() == null || cuenta.especialidad().toString().isEmpty()) {
+            if (cuenta.especialidades() == null || cuenta.especialidades().toString().isEmpty()) {
                 throw new IllegalArgumentException("El campo especialidad no puede estar vacío.");
             }
 
@@ -108,7 +108,7 @@ public class CuentaServiceImpl implements ICuentaService {
                     cuenta.direccion(),
                     cuenta.nombres(),
                     cuenta.apellidos(),
-                    cuenta.especialidad()
+                    cuenta.especialidades()
             );
 
             Cuenta nuevaCuenta = new Cuenta();
@@ -161,14 +161,18 @@ public class CuentaServiceImpl implements ICuentaService {
 
             for(Cuenta cuenta : listaProfesionales ){
                 if (cuenta.getUsuario() instanceof Profesional profesional) {
-                    Especialidad especialidad = obtenerEspecialidad( profesional );
+                    List<Especialidad> especialidades = obtenerEspecialidades( profesional );
+                    List<String> nombresEspecialidad = new ArrayList<>();
+                    for(Especialidad especialidad : especialidades){
+                        nombresEspecialidad.add( especialidad.getNombre() );
+                    }
                     items.add(new ItemProfesionalDTO(
                             cuenta.getId(),
                             profesional.getNombres(),
                             profesional.getApellidos(),
                             profesional.getTipoDocumento(),
                             profesional.getNroDocumento(),
-                            especialidad.getNombre(),
+                            nombresEspecialidad,
                             cuenta.getTelefono(),
                             profesional.getDireccion(),
                             cuenta.getEmail()
@@ -200,14 +204,24 @@ public class CuentaServiceImpl implements ICuentaService {
        return profesionalesEncontrados.get();
     }
 
-    private Especialidad obtenerEspecialidad(Profesional profesional) throws EspecialidadNoEncontradaException {
-        Optional<Especialidad> especialidad = especialidadRepository.findById( profesional.getEspecialidad().toHexString() );
+    private List<Especialidad> obtenerEspecialidades(Profesional profesional) throws EspecialidadNoEncontradaException {
+        List<Especialidad> especialidades = new ArrayList<>();
 
-        if( especialidad.isEmpty() ){
-            throw new EspecialidadNoEncontradaException("La Especialidad no fue encontrada.");
+        for (ObjectId especialidadId : profesional.getEspecialidad()) {
+            Optional<Especialidad> especialidadOpt = especialidadRepository.findById(especialidadId.toHexString());
+
+            if (especialidadOpt.isEmpty()) {
+                throw new EspecialidadNoEncontradaException("Especialidad con ID " + especialidadId.toHexString() + " no fue encontrada.");
+            }
+
+            especialidades.add(especialidadOpt.get());
         }
 
-        return especialidad.get();
+        if (especialidades.isEmpty()) {
+            throw new EspecialidadNoEncontradaException("No se encontraron especialidades para el profesional.");
+        }
+
+        return especialidades;
     }
 
 }

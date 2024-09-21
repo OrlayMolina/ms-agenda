@@ -19,8 +19,8 @@ public class Sede {
     @EqualsAndHashCode.Include
     private String id;
     private String nombre;
-    private Departamento departamento;
-    private Ciudad ciudad;
+    private String departamento;
+    private String ciudad;
     private String direccion;
     private String telefono;
 }

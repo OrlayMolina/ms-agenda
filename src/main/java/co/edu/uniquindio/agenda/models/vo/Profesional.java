@@ -6,13 +6,15 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
 public class Profesional extends Usuario{
-    private ObjectId especialidad;
+    private List<ObjectId> especialidad;
 
     public Profesional(
             String tipoDocumento,
@@ -20,7 +22,7 @@ public class Profesional extends Usuario{
             String direccion,
             String nombres,
             String apellidos,
-            ObjectId especialidad) {
+            List<ObjectId> especialidad) {
         super(tipoDocumento, nroDocumento, direccion, nombres, apellidos);
         this.especialidad = especialidad;
     }

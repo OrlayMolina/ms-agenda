@@ -10,6 +10,7 @@ import org.bson.types.ObjectId;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record CrearCuentaProfesionalDTO(
         @NotNull String tipoDocumento,
@@ -18,7 +19,7 @@ public record CrearCuentaProfesionalDTO(
         @NotBlank @Length(max = 15) String nombres,
         @NotBlank @Length(max = 15) String apellidos,
         @Length(max = 100) String direccion,
-        @NotNull ObjectId especialidad,
+        @NotNull List<ObjectId> especialidades,
         @NotBlank @Length(max = 40) @Email String email,
         @NotBlank @Length(min = 7 , max = 20) String password) {
 }

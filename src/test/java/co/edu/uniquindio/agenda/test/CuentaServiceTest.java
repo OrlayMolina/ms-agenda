@@ -58,7 +58,7 @@ public class CuentaServiceTest {
                 "Maria Claudia",
                 "Curtidor",
                 "Granada",
-                new ObjectId("66eb9db95e23cd4478146a7b"),
+                List.of(new ObjectId("66eb9db95e23cd4478146a7b")),
                 "mariacurtidor@gmail.com",
                 "789635"
         );
