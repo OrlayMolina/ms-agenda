@@ -24,9 +24,9 @@ public class Cita {
     private ObjectId idMedico;
     private ObjectId idPaciente;
     private ObjectId idSede;
-    private boolean confirmado;
+    private boolean confirmada;
     private LocalDateTime fechaCita;
-    private Consultorio consultorio;
+    private String consultorio;
     private String comentarios;
     private EstadoCita estado;
 
@@ -34,16 +34,16 @@ public class Cita {
                 ObjectId idMedico,
                 ObjectId idPaciente,
                 ObjectId idSede,
-                boolean confirmado,
+                boolean confirmada,
                 LocalDateTime fechaCita,
-                Consultorio consultorio,
+                String consultorio,
                 String comentarios,
                 EstadoCita estado) {
         this.codigo = codigo;
         this.idMedico = idMedico;
         this.idPaciente = idPaciente;
         this.idSede = idSede;
-        this.confirmado = confirmado;
+        this.confirmada = confirmada;
         this.fechaCita = fechaCita;
         this.consultorio = consultorio;
         this.comentarios = comentarios;

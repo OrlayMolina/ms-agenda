@@ -5,11 +5,11 @@ import lombok.Getter;
 @Getter
 public enum Consultorio {
 
-    UNO("001"),
-    DOS("002"),
-    TRES("003"),
-    CUATRO("004"),
-    CINCO("005");
+    UNO("Consultorio 001"),
+    DOS("Consultorio 002"),
+    TRES("Consultorio 003"),
+    CUATRO("Consultorio 004"),
+    CINCO("Consultorio 005");
 
     private final String value;
     Consultorio(String value){

@@ -8,16 +8,22 @@ import co.edu.uniquindio.agenda.exceptions.sede.SedeNoEncontradaException;
 import co.edu.uniquindio.agenda.models.documents.Cita;
 import co.edu.uniquindio.agenda.models.documents.Cuenta;
 import co.edu.uniquindio.agenda.models.documents.Sede;
+import co.edu.uniquindio.agenda.models.enums.Ciudad;
+import co.edu.uniquindio.agenda.models.enums.Departamento;
+import co.edu.uniquindio.agenda.models.enums.EstadoCita;
 import co.edu.uniquindio.agenda.models.vo.Paciente;
 import co.edu.uniquindio.agenda.models.vo.Profesional;
+import co.edu.uniquindio.agenda.repository.ICitaRepository;
 import co.edu.uniquindio.agenda.repository.ICuentaRepository;
 import co.edu.uniquindio.agenda.repository.ISedeRepository;
 import co.edu.uniquindio.agenda.services.interfaces.ICitaService;
 import co.edu.uniquindio.agenda.utils.GenerarCodigo;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,24 +32,33 @@ import java.util.Optional;
 public class CitaServiceImpl implements ICitaService {
 
     private final ICuentaRepository cuentaRepository;
+    private final ICitaRepository citaRepository;
     private final ISedeRepository sedeRepository;
     private final GenerarCodigo generarCodigo;
     @Override
-    public String crearCitaMedica(CrearCitaDTO crearCitaDTO) throws CitaNoCreadaException, PacienteNoAfiliadoException {
+    public String crearCitaMedica(CrearCitaDTO crearCitaDTO) throws CitaNoCreadaException {
 
         try {
-            Paciente paciente = encontrarPacientePorId( crearCitaDTO.idPaciente() );
-            Sede sede = encontrarSedePorId( crearCitaDTO.idSede() );
-            Profesional profesional = encontrarProfesionalPorId( crearCitaDTO.idMedico() );
             String codigoCita = generarCodigo.generarCodigoAleatorioCita();
+            ObjectId objectMedico = new ObjectId( crearCitaDTO.idMedico() );
+            ObjectId objectPaciente = new ObjectId( crearCitaDTO.idPaciente() );
+            ObjectId objectSede = new ObjectId( crearCitaDTO.idSede() );
 
             Cita crearCita = new Cita();
             crearCita.setCodigo( codigoCita );
-            crearCita.setIdMedico( crearCitaDTO.idMedico() );
+            crearCita.setIdMedico( objectMedico );
+            crearCita.setIdPaciente( objectPaciente );
+            crearCita.setIdSede( objectSede );
+            crearCita.setConfirmada( false );
+            crearCita.setFechaCita( crearCitaDTO.fechaCita() );
+            crearCita.setConsultorio( crearCitaDTO.consultorio() );
+            crearCita.setComentarios( crearCitaDTO.comentarios() );
+            crearCita.setEstado( EstadoCita.PROGRAMADA );
 
-            return null;
-        } catch (PacienteNoAfiliadoException e) {
-            throw new PacienteNoAfiliadoException("El paciente no está afiliado: " + e.getMessage());
+            citaRepository.save( crearCita );
+
+            return "Cita creada exitosamente.";
+
         } catch (Exception e) {
             throw new CitaNoCreadaException("La cita no fue creada. " + e.getMessage());
         }
@@ -51,7 +66,13 @@ public class CitaServiceImpl implements ICitaService {
 
     @Override
     public String editarCitaMedica(EditarCitaDTO editarCitaDTO) throws CitaNoEditadaException {
-        return null;
+
+        try {
+
+            return  "";
+        } catch (Exception e){
+            throw new CitaNoEditadaException("La cita no fue creada. " + e.getMessage());
+        }
     }
 
     @Override
@@ -60,8 +81,46 @@ public class CitaServiceImpl implements ICitaService {
     }
 
     @Override
-    public InformacionCitaDTO obtenerInformacionCitaDTO(String idCita) throws CitaNoEncontradaException {
-        return null;
+    public InformacionCitaDTO obtenerInformacionCitaDTO(String idCita) throws CitaNoEncontradaException, PacienteNoAfiliadoException, SedeNoEncontradaException {
+
+        try {
+            Cita cita = encontrarCitaPorId( idCita );
+            Paciente paciente = encontrarPacientePorId( cita.getIdPaciente().toHexString() );
+            Sede sede = encontrarSedePorId( "66ed9b9d33719f5396d8490c" );
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            String horaCita = cita.getFechaCita().format(formatter);
+
+            Departamento departamento = sede.getDepartamento();
+            Ciudad ciudad = sede.getCiudad();
+
+            return new InformacionCitaDTO(
+                    cita.getId(),
+                    cita.getCodigo(),
+                    paciente.getNombres() + " " + paciente.getApellidos(),
+                    paciente.getTipoDocumento(),
+                    paciente.getNroDocumento(),
+                    paciente.getCelular(),
+                    sede.getNombre(),
+                    false,
+                    cita.getFechaCita(),
+                    "Dermatologia",
+                    "20 Minutos",
+                    horaCita,
+                    cita.getConsultorio(),
+                    cita.getComentarios(),
+                    cita.getEstado().toString()
+            );
+
+        }catch (CitaNoEncontradaException e) {
+            throw new CitaNoEncontradaException("Cita con ID " + idCita + " no fue encontrada.");
+        } catch (PacienteNoAfiliadoException e) {
+            throw new PacienteNoAfiliadoException("El paciente asociado con la cita no está afiliado.");
+        } catch (SedeNoEncontradaException e) {
+            throw new SedeNoEncontradaException("La sede asociada con la cita no fue encontrada.");
+        } catch (Exception e) {
+            throw new RuntimeException("Ocurrió un error inesperado al obtener la información de la cita.", e);
+        }
     }
 
     @Override
@@ -84,33 +143,6 @@ public class CitaServiceImpl implements ICitaService {
         return null;
     }
 
-    private boolean confirmarPacienteAfiliado(String nroDocumento) throws PacienteNoAfiliadoException {
-        try {
-            Optional<Cuenta> paciente = cuentaRepository.buscaNroDocumento( nroDocumento );
-
-            if( paciente.isEmpty() ){
-                throw new PacienteNoAfiliadoException("El paciente no se encuentra afiliado o registrado en la Clínica.");
-            }
-
-            return true;
-        } catch (Exception e){
-            throw new PacienteNoAfiliadoException("El paciente no se encuentra registrado con ese número de documento." + e.getMessage() );
-        }
-    }
-
-    private boolean confirmarPacienteAfiliadoPorNombre(String nombres, String apellidos) throws PacienteNoAfiliadoException {
-        try {
-            Optional<Cuenta> paciente = cuentaRepository.findCuentasByNombresRegexAndApellidosRegex(nombres, apellidos);
-
-            if( paciente.isEmpty() ){
-                throw new PacienteNoAfiliadoException("El paciente no se encuentra afilidado o registrado en la Clínica.");
-            }
-            return true;
-        } catch (Exception e){
-            throw new PacienteNoAfiliadoException("El paciente no se encuentra registrado con ese nombre.");
-        }
-    }
-
     private Paciente encontrarPacientePorId(String id) throws PacienteNoAfiliadoException {
         try {
             Optional<Cuenta> cuenta = cuentaRepository.findById( id );
@@ -127,6 +159,21 @@ public class CitaServiceImpl implements ICitaService {
 
         } catch (Exception e){
             throw new PacienteNoAfiliadoException("El paciente no fue encontrado " + e.getMessage());
+        }
+    }
+
+    private Cita encontrarCitaPorId(String id) throws CitaNoEncontradaException {
+        try {
+            Optional<Cita> cita = citaRepository.findById( id );
+
+            if( cita.isEmpty() ){
+                throw new CuentaNoEncontradaException("La Cita no se encuentra registrada en la Clínica.");
+            }
+
+            return cita.get();
+
+        } catch (Exception e){
+            throw new CitaNoEncontradaException("La Cita no fue encontrada " + e.getMessage());
         }
     }
 

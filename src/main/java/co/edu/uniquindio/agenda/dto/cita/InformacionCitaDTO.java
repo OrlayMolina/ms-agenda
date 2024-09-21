@@ -10,8 +10,9 @@ public record InformacionCitaDTO(
         @NotBlank String id,
         @NotBlank String codigo,
         @NotBlank String paciente,
+        @NotBlank String tipoDocumento,
         @NotBlank String nroDocumento,
-        @NotBlank String telefonoPaciente,
+        @NotBlank String celularPaciente,
         @NotBlank String sede,
         @NotNull boolean confirmado,
         @Future(message = "La cita médica no puede ser asignada en una fecha anterior a la actual.")

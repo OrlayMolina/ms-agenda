@@ -11,8 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 @SpringBootTest
 public class EspecialidadServiceTest {
 
@@ -25,9 +23,9 @@ public class EspecialidadServiceTest {
                 "Dermatologia"
         );
 
-        String id = especialidadService.crearEspecialidad( registrarEspecialidadDTO );
+        String resultado = especialidadService.crearEspecialidad( registrarEspecialidadDTO );
 
-        Assertions.assertNotNull(id);
+        Assertions.assertNotNull(resultado);
     }
 
     @Test

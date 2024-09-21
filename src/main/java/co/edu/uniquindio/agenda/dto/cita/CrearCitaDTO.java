@@ -7,16 +7,11 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public record CrearCitaDTO(
-        @NotBlank String paciente,
-        @NotBlank String nroDocumento,
-        @NotBlank String telefonoPaciente,
-        @NotBlank String sede,
-        @NotNull boolean confirmado,
-        @Future(message = "La cita médica no puede ser asignada en una fecha anterior a la actual.")
+        @NotBlank String idMedico,
+        @NotBlank String idPaciente,
+        @NotBlank String idSede,
+        @Future(message = "La cita médica no puede ser aginada en una fecha anterior a la actual.")
         LocalDateTime fechaCita,
-        @NotBlank String especialidad,
-        @NotBlank String duracion,
-        @NotBlank String horacita,
         @NotBlank String consultorio,
         @NotBlank String comentarios) {
 }

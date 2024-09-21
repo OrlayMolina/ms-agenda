@@ -14,7 +14,6 @@ public interface ICuentaRepository extends MongoRepository<Cuenta, String> {
 
     @Query("{ 'usuario': { $ne: null }, 'usuario.nroDocumento': ?0 }")
     Optional<Cuenta> buscaNroDocumento(String nroDocumento);
-    Optional<Cuenta> findCuentasByNombresRegexAndApellidosRegex(String nombres, String apellidos);
     Optional<Cuenta> findByEmail(String email);
     Optional<List<Cuenta>> findCuentasByRol(String rol);
     Optional<Cuenta> findCuentasByIdIs(String id);
