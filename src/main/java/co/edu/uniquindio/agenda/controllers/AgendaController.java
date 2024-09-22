@@ -7,6 +7,7 @@ import co.edu.uniquindio.agenda.exceptions.agenda.AgendaNoEncontradaException;
 import co.edu.uniquindio.agenda.exceptions.cita.CitaNoEncontradaException;
 import co.edu.uniquindio.agenda.exceptions.cita.PacienteNoAfiliadoException;
 import co.edu.uniquindio.agenda.exceptions.cuenta.ProfesionalesNoEncontradosException;
+import co.edu.uniquindio.agenda.exceptions.especialidad.EspecialidadNoEncontradaException;
 import co.edu.uniquindio.agenda.exceptions.sede.SedeNoEncontradaException;
 import co.edu.uniquindio.agenda.services.interfaces.IAgendaService;
 import lombok.RequiredArgsConstructor;
@@ -26,5 +27,10 @@ public class AgendaController {
     @GetMapping("/obtener-agendas/{idAgenda}")
     public ResponseEntity<MensajeDTO<InformacionAgendaDTO>> obtenerAgendas(@PathVariable String idAgenda) throws AgendaNoEncontradaException, ProfesionalesNoEncontradosException {
         return ResponseEntity.ok().body( new MensajeDTO<>( false, agendaService.obtenerInformacionAgendaDTO( idAgenda )) );
+    }
+
+    @GetMapping("/obtener-agendas-especialidad/{idEspecilidad}")
+    public ResponseEntity<MensajeDTO<InformacionAgendaDTO>> obtenerAgendasPorEspecialidad(@PathVariable String idEspecilidad ) throws AgendaNoEncontradaException, EspecialidadNoEncontradaException, ProfesionalesNoEncontradosException {
+        return ResponseEntity.ok().body( new MensajeDTO<>(false, agendaService.obtenerInformacionAgendaPorEspecialidadDTO( idEspecilidad )));
     }
 }

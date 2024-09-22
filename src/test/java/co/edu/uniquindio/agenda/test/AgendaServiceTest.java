@@ -5,6 +5,7 @@ import co.edu.uniquindio.agenda.dto.agenda.InformacionAgendaDTO;
 import co.edu.uniquindio.agenda.exceptions.agenda.AgendaNoCreadaException;
 import co.edu.uniquindio.agenda.exceptions.agenda.AgendaNoEncontradaException;
 import co.edu.uniquindio.agenda.exceptions.cuenta.ProfesionalesNoEncontradosException;
+import co.edu.uniquindio.agenda.exceptions.especialidad.EspecialidadNoEncontradaException;
 import co.edu.uniquindio.agenda.models.enums.DuracionAgenda;
 import co.edu.uniquindio.agenda.services.interfaces.IAgendaService;
 import org.bson.types.ObjectId;
@@ -49,5 +50,29 @@ public class AgendaServiceTest {
         Assertions.assertNotNull( informacionAgendaDTO );
 
         System.out.println( informacionAgendaDTO );
+    }
+
+    @Test
+    public void obtenerAgendaPorEspecialidadTest() throws AgendaNoEncontradaException, EspecialidadNoEncontradaException, ProfesionalesNoEncontradosException {
+
+        InformacionAgendaDTO informacionAgendaDTO = agendaService.obtenerInformacionAgendaPorEspecialidadDTO( "66eb9db95e23cd4478146a7b" );
+
+        Assertions.assertNotNull( informacionAgendaDTO );
+
+        System.out.println( informacionAgendaDTO );
+    }
+
+    @Test
+    public void obtenerAgendaPorEspecialidadErrorTest() {
+
+        try {
+            InformacionAgendaDTO informacionAgendaDTO = agendaService.obtenerInformacionAgendaPorEspecialidadDTO( "idmalo" );
+
+            Assertions.assertNotNull( informacionAgendaDTO );
+
+            System.out.println( informacionAgendaDTO );
+        } catch (Exception e){
+            Assertions.assertTrue(true);
+        }
     }
 }

@@ -9,14 +9,15 @@ import co.edu.uniquindio.agenda.exceptions.cita.CitaNoEncontradaException;
 import co.edu.uniquindio.agenda.exceptions.cita.PacienteNoAfiliadoException;
 import co.edu.uniquindio.agenda.exceptions.cuenta.CuentaNoEncontradaException;
 import co.edu.uniquindio.agenda.exceptions.cuenta.ProfesionalesNoEncontradosException;
+import co.edu.uniquindio.agenda.exceptions.especialidad.EspecialidadNoEncontradaException;
 import co.edu.uniquindio.agenda.exceptions.sede.SedeNoEncontradaException;
-import co.edu.uniquindio.agenda.models.documents.Agenda;
-import co.edu.uniquindio.agenda.models.documents.Cita;
-import co.edu.uniquindio.agenda.models.documents.Sede;
+import co.edu.uniquindio.agenda.models.documents.*;
 import co.edu.uniquindio.agenda.models.enums.EstadoAgenda;
 import co.edu.uniquindio.agenda.models.vo.Profesional;
 import co.edu.uniquindio.agenda.models.vo.Usuario;
 import co.edu.uniquindio.agenda.repository.IAgendaRepository;
+import co.edu.uniquindio.agenda.repository.ICuentaRepository;
+import co.edu.uniquindio.agenda.repository.IEspecialidadRepository;
 import co.edu.uniquindio.agenda.services.interfaces.IAgendaService;
 import co.edu.uniquindio.agenda.services.interfaces.ICitaService;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ import java.util.Optional;
 public class AgendaServiceImpl implements IAgendaService {
 
     private final IAgendaRepository agendaRepository;
+    private final IEspecialidadRepository especialidadRepository;
     private final CitaServiceImpl citaService;
 
     @Override
@@ -85,12 +87,19 @@ public class AgendaServiceImpl implements IAgendaService {
     }
 
     @Override
-    public InformacionAgendaDTO obtenerInformacionAgendaPorEspecialidadDTO(String idEspecialidad) throws AgendaNoEncontradaException, ProfesionalesNoEncontradosException {
-        return null;
+    public InformacionAgendaDTO obtenerInformacionAgendaPorEspecialidadDTO(String idEspecialidad) throws AgendaNoEncontradaException, ProfesionalesNoEncontradosException, EspecialidadNoEncontradaException {
+
+        String nombreEspecialidad = obtenerNombreEspecialidad( idEspecialidad );
+        Agenda agenda = obtenerAgendaPorNombreEspecialidad( nombreEspecialidad );
+
+        return obtenerInformacionAgendaDTO( agenda.getId() );
     }
 
     @Override
-    public InformacionAgendaDTO obtenerInformacionAgendaPorMedicoDTO(String idMedico) throws AgendaNoEncontradaException, ProfesionalesNoEncontradosException {
+    public InformacionAgendaDTO obtenerInformacionAgendaPorMedicoDTO(String idMedico) throws ProfesionalesNoEncontradosException {
+
+        Profesional profesional = citaService.encontrarProfesionalPorId( idMedico );
+
         return null;
     }
 
@@ -107,5 +116,26 @@ public class AgendaServiceImpl implements IAgendaService {
         } catch (Exception e){
             throw new AgendaNoEncontradaException("La Agenda no fue encontrada " + e.getMessage());
         }
+    }
+
+    private String obtenerNombreEspecialidad( String idEspecialidad ) throws EspecialidadNoEncontradaException {
+        Optional<Especialidad> especialidad = especialidadRepository.findById( idEspecialidad );
+
+        if( especialidad.isEmpty() ){
+            throw new EspecialidadNoEncontradaException("Especialidad no encontrada.");
+        }
+
+        return especialidad.get().getNombre();
+    }
+
+    private Agenda obtenerAgendaPorNombreEspecialidad( String nombre ) throws AgendaNoEncontradaException {
+
+        Optional<Agenda> agenda = agendaRepository.findAgendaByEspecialidad( nombre );
+
+        if( agenda.isEmpty() ) {
+            throw new AgendaNoEncontradaException("Agenda por especialidad no encontrada");
+        }
+
+        return agenda.get();
     }
 }

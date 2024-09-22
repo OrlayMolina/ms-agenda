@@ -30,7 +30,6 @@ public class EmailServiceImpl implements IEmailService {
     @Async
     public void enviarCorreo(EmailDTO emailDTO) throws Exception {
 
-
         Email email = EmailBuilder.startingBlank()
                 .from(smtpUsername)
                 .to(emailDTO.destinatario())
@@ -48,7 +47,6 @@ public class EmailServiceImpl implements IEmailService {
 
             mailer.sendMail(email);
         }
-
 
     }
 

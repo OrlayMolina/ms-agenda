@@ -2,6 +2,7 @@ package co.edu.uniquindio.agenda.services.implementations;
 
 import co.edu.uniquindio.agenda.config.JWTUtils;
 import co.edu.uniquindio.agenda.dto.cuenta.*;
+import co.edu.uniquindio.agenda.dto.email.EmailDTO;
 import co.edu.uniquindio.agenda.exceptions.cuenta.*;
 import co.edu.uniquindio.agenda.exceptions.especialidad.EspecialidadNoEncontradaException;
 import co.edu.uniquindio.agenda.models.documents.Cuenta;
@@ -13,6 +14,7 @@ import co.edu.uniquindio.agenda.models.vo.Profesional;
 import co.edu.uniquindio.agenda.repository.ICuentaRepository;
 import co.edu.uniquindio.agenda.repository.IEspecialidadRepository;
 import co.edu.uniquindio.agenda.services.interfaces.ICuentaService;
+import co.edu.uniquindio.agenda.services.interfaces.IEmailService;
 import co.edu.uniquindio.agenda.utils.GenerarCodigo;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
@@ -30,6 +32,7 @@ import java.util.Optional;
 public class CuentaServiceImpl implements ICuentaService {
 
     private final ICuentaRepository cuentaRepository;
+    private final IEmailService emailService;
     private final IEspecialidadRepository especialidadRepository;
     private final GenerarCodigo generarCodigo;
     private final JWTUtils jwtUtils;
@@ -110,6 +113,8 @@ public class CuentaServiceImpl implements ICuentaService {
             nuevaCuenta.setFechaRegistro( LocalDateTime.now() );
             nuevaCuenta.setPassword( encriptarPassword(cuenta.password()) );
             nuevaCuenta.setEstado( EstadoCuenta.INACTIVO );
+
+            emailService.enviarCorreo( new EmailDTO(cuenta.email(), "Asunto mensaje", "Hola") );
 
             return cuentaRepository.save( nuevaCuenta );
         } catch (Exception e){
