@@ -15,7 +15,7 @@ public interface ICuentaService {
     Cuenta editarCuentaPaciente(EditarCuentaPacienteDTO cuenta) throws CuentaNoEditadaException;
     String enviarCodigoRecuperacionPassword(String correo) throws CodigoValidacionNoEnviadoException;
     String cambiarPassword(CambiarPasswordDTO cambiarPasswordDTO) throws PasswordNoEditadaException;
-    String iniciarSesion(LoginDTO loginDTO) throws SesionNoIniciadaException;
+    TokenDTO iniciarSesion(LoginDTO loginDTO) throws SesionNoIniciadaException;
     List<ItemProfesionalDTO> listarProfesionales() throws ProfesionalesNoEncontradosException;
 
 }

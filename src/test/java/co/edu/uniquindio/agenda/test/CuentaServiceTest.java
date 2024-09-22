@@ -29,19 +29,19 @@ public class CuentaServiceTest {
     public void crearCuentaPacienteTest() throws CuentaNoCreadaException {
         CrearCuentaPacienteDTO registrarCuentaPaciente = new CrearCuentaPacienteDTO(
                 TipoDocumento.CC.getValue(),
-                "34489784",
-                "7425896",
-                "Jorge Andrés",
-                "Mendez Rolando",
-                "Barrio Los Quindos",
+                "48795663",
+                "3152684521",
+                "Mayra Alejandra",
+                "Orozco Villa",
+                "Tebaida",
                 Nacionalidad.COLOMBIANA,
-                LocalDateTime.of(1987, 9, 14, 15, 30),
+                LocalDateTime.of(1998, 9, 14, 15, 30),
                 Departamento.QUINDIO.getNombre(),
                 Ciudad.ARMENIA.getValue(),
-                "31278496523",
+                "3127849645",
                 Regimen.CONTRIBUTIVO,
                 PlanComplementario.SIN_PLAN.getValue(),
-                "jorgeandres@gmail.com",
+                "mayravilla@gmail.com",
                 "12345678"
         );
 

@@ -16,6 +16,7 @@ public interface ICitaService {
     InformacionCitaDTO obtenerInformacionCitaDTO(String idCita) throws CitaNoEncontradaException, PacienteNoAfiliadoException, SedeNoEncontradaException, ProfesionalesNoEncontradosException;
     List<ItemCitaDTO> listarCitas() throws CitaNoEncontradaException;
     List<ItemCitaDTO> listarCitasPorMedico(String idMedico) throws CitaNoEncontradaException;
+    List<InformacionCitaDTO> citasPorMedico(String idMedico) throws CitaNoEncontradaException;
     List<ItemCitaDTO> listarCitasPorEsepcialidad(String idEspecialidad) throws CitaNoEncontradaException;
     List<ItemCitaDTO> listarCitasPorFechaCita(LocalDateTime fechaCita) throws CitaNoEncontradaException;
 }

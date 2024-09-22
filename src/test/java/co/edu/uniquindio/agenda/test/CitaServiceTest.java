@@ -22,12 +22,12 @@ public class CitaServiceTest {
     public void crearCitaTest() throws CitaNoCreadaException, PacienteNoAfiliadoException {
         CrearCitaDTO registrarCitaDTO = new CrearCitaDTO(
                 "66ed977dc1c0830a7e35ae78",
-                "66eb9e55ad1866569a4c7b77",
+                "66ef7fedbdcb1e524c679d7a",
                 "66ed9b9d33719f5396d8490c",
-                LocalDateTime.of(2024, 9, 14, 15, 30),
+                LocalDateTime.of(2024, 9, 14, 16, 00),
                 Consultorio.UNO.getValue(),
-                "Paciente en condiciones aceptables de salud",
-                "66eb9e55ad1866569a4c7b77"
+                "Paciente en condiciones aceptables de salud nuevo",
+                "66ef7fedbdcb1e524c679d7a"
         );
 
         String mensaje = citaService.crearCitaMedica( registrarCitaDTO );

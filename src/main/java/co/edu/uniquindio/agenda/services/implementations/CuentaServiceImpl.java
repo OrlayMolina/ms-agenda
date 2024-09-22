@@ -1,5 +1,6 @@
 package co.edu.uniquindio.agenda.services.implementations;
 
+import co.edu.uniquindio.agenda.config.JWTUtils;
 import co.edu.uniquindio.agenda.dto.cuenta.*;
 import co.edu.uniquindio.agenda.exceptions.cuenta.*;
 import co.edu.uniquindio.agenda.exceptions.especialidad.EspecialidadNoEncontradaException;
@@ -15,11 +16,13 @@ import co.edu.uniquindio.agenda.services.interfaces.ICuentaService;
 import co.edu.uniquindio.agenda.utils.GenerarCodigo;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -29,6 +32,7 @@ public class CuentaServiceImpl implements ICuentaService {
     private final ICuentaRepository cuentaRepository;
     private final IEspecialidadRepository especialidadRepository;
     private final GenerarCodigo generarCodigo;
+    private final JWTUtils jwtUtils;
 
     @Override
     public String activarCuenta(String email, String codigoValidacion) throws CuentaNoActivadaException {
@@ -104,7 +108,7 @@ public class CuentaServiceImpl implements ICuentaService {
             nuevaCuenta.setNivelAcceso( NivelAcceso.BASIC.getValue() );
             nuevaCuenta.setTelefono( cuenta.telefono() );
             nuevaCuenta.setFechaRegistro( LocalDateTime.now() );
-            nuevaCuenta.setPassword( cuenta.password() );
+            nuevaCuenta.setPassword( encriptarPassword(cuenta.password()) );
             nuevaCuenta.setEstado( EstadoCuenta.INACTIVO );
 
             return cuentaRepository.save( nuevaCuenta );
@@ -243,21 +247,20 @@ public class CuentaServiceImpl implements ICuentaService {
     }
 
     @Override
-    public String iniciarSesion(LoginDTO loginDTO) throws SesionNoIniciadaException {
+    public TokenDTO iniciarSesion(LoginDTO loginDTO) throws SesionNoIniciadaException {
         try {
-            Optional<Cuenta>  cuentaOptional = cuentaRepository.findByEmail(loginDTO.correo());
+            Cuenta cuenta = obtenerPorEmail(loginDTO.email());
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-            if(cuentaOptional.isEmpty()){
-                throw new SesionNoIniciadaException("El correo dado no es encontrado ");
+
+            if( !passwordEncoder.matches(loginDTO.password(), cuenta.getPassword()) ) {
+                throw new Exception("La contraseña es incorrecta");
             }
 
-            Cuenta cuenta = cuentaOptional.get();
 
-            if(!cuenta.getPassword().equals(loginDTO.password())) {
-                throw new SesionNoIniciadaException("la contraseña es incorrecta");
-            }
+            Map<String, Object> map = construirClaims(cuenta);
+            return new TokenDTO( jwtUtils.generarToken(cuenta.getEmail(), map) );
 
-            return "TOKE_JWT";
         }catch(Exception e){
             throw new SesionNoIniciadaException("Sesión no fue iniciada." + e.getMessage());
         }
@@ -333,6 +336,33 @@ public class CuentaServiceImpl implements ICuentaService {
         }
 
         return especialidades;
+    }
+
+    private Cuenta obtenerPorEmail(String email) throws Exception{
+        try {
+            Optional<Cuenta> cuenta = cuentaRepository.findByEmail( email );
+
+            if( cuenta.isEmpty() ){
+                throw new Exception("Cuenta no encontrado.");
+            }
+
+            return cuenta.get();
+        }catch(Exception e){
+            throw new Exception("Error al buscar el correo." + e.getMessage());
+        }
+    }
+
+    private String encriptarPassword(String password){
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        return passwordEncoder.encode( password );
+    }
+
+    private Map<String, Object> construirClaims(Cuenta cuenta) {
+        return Map.of(
+                "rol", cuenta.getRol(),
+                "nombre", cuenta.getUsuario().getNombres(),
+                "id", cuenta.getId()
+        );
     }
 
 }

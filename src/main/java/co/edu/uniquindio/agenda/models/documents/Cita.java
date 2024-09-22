@@ -30,7 +30,7 @@ public class Cita {
     private String consultorio;
     private String comentarios;
     private EstadoCita estado;
-    private EstadoRegistro estadoRegistro;
+    private String estadoRegistro;
     private ObjectId usuarioCreacion;
 
     public Cita(String codigo,
@@ -42,7 +42,7 @@ public class Cita {
                 String consultorio,
                 String comentarios,
                 EstadoCita estado,
-                EstadoRegistro estadoRegistro,
+                String estadoRegistro,
                 ObjectId usuarioCreacion) {
         this.codigo = codigo;
         this.idMedico = idMedico;

@@ -1,7 +1,10 @@
 package co.edu.uniquindio.agenda.test;
 
 import co.edu.uniquindio.agenda.dto.agenda.CrearAgendaDTO;
+import co.edu.uniquindio.agenda.dto.agenda.InformacionAgendaDTO;
 import co.edu.uniquindio.agenda.exceptions.agenda.AgendaNoCreadaException;
+import co.edu.uniquindio.agenda.exceptions.agenda.AgendaNoEncontradaException;
+import co.edu.uniquindio.agenda.exceptions.cuenta.ProfesionalesNoEncontradosException;
 import co.edu.uniquindio.agenda.models.enums.DuracionAgenda;
 import co.edu.uniquindio.agenda.services.interfaces.IAgendaService;
 import org.bson.types.ObjectId;
@@ -36,5 +39,15 @@ public class AgendaServiceTest {
         String mensaje = agendaService.crearAgenda(crearAgendaDTO);
 
         Assertions.assertEquals("Agenda creada exitosamente.", mensaje);
+    }
+
+    @Test
+    public void obtenerAgendaTest() throws AgendaNoEncontradaException, ProfesionalesNoEncontradosException {
+
+        InformacionAgendaDTO informacionAgendaDTO = agendaService.obtenerInformacionAgendaDTO( "66eec9459197de431d5ea3ee" );
+
+        Assertions.assertNotNull( informacionAgendaDTO );
+
+        System.out.println( informacionAgendaDTO );
     }
 }

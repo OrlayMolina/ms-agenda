@@ -3,6 +3,7 @@ package co.edu.uniquindio.agenda.services.implementations;
 import co.edu.uniquindio.agenda.dto.cita.*;
 import co.edu.uniquindio.agenda.exceptions.cita.*;
 import co.edu.uniquindio.agenda.exceptions.cuenta.CuentaNoEncontradaException;
+import co.edu.uniquindio.agenda.exceptions.cuenta.ProfesionalesNoEncontradosException;
 import co.edu.uniquindio.agenda.exceptions.especialidad.EspecialidadNoEncontradaException;
 import co.edu.uniquindio.agenda.exceptions.sede.SedeNoEncontradaException;
 import co.edu.uniquindio.agenda.models.documents.Cita;
@@ -12,6 +13,7 @@ import co.edu.uniquindio.agenda.models.documents.Sede;
 import co.edu.uniquindio.agenda.models.enums.EstadoCita;
 import co.edu.uniquindio.agenda.models.enums.EstadoRegistro;
 import co.edu.uniquindio.agenda.models.vo.Paciente;
+import co.edu.uniquindio.agenda.models.vo.Profesional;
 import co.edu.uniquindio.agenda.models.vo.Usuario;
 import co.edu.uniquindio.agenda.repository.ICitaRepository;
 import co.edu.uniquindio.agenda.repository.ICuentaRepository;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,7 +60,7 @@ public class CitaServiceImpl implements ICitaService {
             crearCita.setConsultorio( crearCitaDTO.consultorio() );
             crearCita.setComentarios( crearCitaDTO.comentarios() );
             crearCita.setEstado( EstadoCita.PROGRAMADA );
-            crearCita.setEstadoRegistro( EstadoRegistro.ACTIVO );
+            crearCita.setEstadoRegistro( EstadoRegistro.ACTIVO.getValue() );
             crearCita.setUsuarioCreacion( objectUsuario );
 
             citaRepository.save( crearCita );
@@ -114,7 +117,7 @@ public class CitaServiceImpl implements ICitaService {
                     cita.getConsultorio(),
                     cita.getComentarios(),
                     cita.getEstado().toString(),
-                    cita.getEstadoRegistro().getValue(),
+                    cita.getEstadoRegistro(),
                     usuario.getNombres() + " " + usuario.getApellidos()
             );
 
@@ -140,6 +143,31 @@ public class CitaServiceImpl implements ICitaService {
     }
 
     @Override
+    public List<InformacionCitaDTO> citasPorMedico(String idMedico) throws CitaNoEncontradaException {
+
+        ObjectId objectIdMedico = new ObjectId( idMedico );
+        try {
+            Optional<List<Cita>> citas = citaRepository.findCitasByIdMedicoAndEstadoRegistro( objectIdMedico, EstadoRegistro.ACTIVO.getValue() );
+
+            if( citas.isEmpty() || citas.get().isEmpty()){
+                throw new CitaNoEncontradaException("Error al buscar las citas del profesional.");
+            }
+
+            List<InformacionCitaDTO> citasInfo = new ArrayList<>();
+            for(Cita cita : citas.get() ){
+                InformacionCitaDTO info = obtenerInformacionCitaDTO( cita.getId() );
+
+                citasInfo.add( info );
+            }
+
+            return citasInfo;
+
+        }catch(Exception e){
+            throw new CitaNoEncontradaException("Error al carga citas por médico." +e.getMessage());
+        }
+    }
+
+    @Override
     public List<ItemCitaDTO> listarCitasPorEsepcialidad(String idEspecialidad) throws CitaNoEncontradaException {
         return null;
     }
@@ -149,7 +177,7 @@ public class CitaServiceImpl implements ICitaService {
         return null;
     }
 
-    private Paciente encontrarPacientePorId(String id) throws PacienteNoAfiliadoException {
+    public Paciente encontrarPacientePorId(String id) throws PacienteNoAfiliadoException {
         try {
             Optional<Cuenta> cuenta = cuentaRepository.findById( id );
 
@@ -168,7 +196,7 @@ public class CitaServiceImpl implements ICitaService {
         }
     }
 
-    private Cita encontrarCitaPorId(String id) throws CitaNoEncontradaException {
+    public Cita encontrarCitaPorId(String id) throws CitaNoEncontradaException {
         try {
             Optional<Cita> cita = citaRepository.findById( id );
 
@@ -183,7 +211,26 @@ public class CitaServiceImpl implements ICitaService {
         }
     }
 
-    private Sede encontrarSedePorId(String id) throws SedeNoEncontradaException {
+    public Profesional encontrarProfesionalPorId(String id) throws ProfesionalesNoEncontradosException {
+        try {
+            Optional<Cuenta> cuenta = cuentaRepository.findById( id );
+
+            if( cuenta.isEmpty() ){
+                throw new CuentaNoEncontradaException("La Cuenta no se encuentra registrado en la Clínica.");
+            }
+
+            if( !(cuenta.get().getUsuario() instanceof Profesional) ){
+                throw new ProfesionalesNoEncontradosException("El id no esta asociado a un profesional.");
+            }
+
+            return (Profesional) cuenta.get().getUsuario();
+
+        } catch (Exception e ){
+            throw new ProfesionalesNoEncontradosException("Error al traer el profesional." + e.getMessage());
+        }
+    }
+
+    public Sede encontrarSedePorId(String id) throws SedeNoEncontradaException {
         try {
             Optional<Sede> sede = sedeRepository.findById( id );
 
@@ -197,7 +244,7 @@ public class CitaServiceImpl implements ICitaService {
         }
     }
 
-    private Usuario encontrarCuentaPorId(String id) throws CuentaNoEncontradaException {
+    public Usuario encontrarCuentaPorId(String id) throws CuentaNoEncontradaException {
         try {
             Optional<Cuenta> cuenta = cuentaRepository.findById( id );
 
