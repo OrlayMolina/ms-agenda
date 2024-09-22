@@ -8,7 +8,5 @@ import java.time.LocalDateTime;
 
 public record EliminarCitaDTO(
         @NotBlank String id,
-        @NotBlank String idMedico,
-        @NotBlank String idPaciente,
-        @NotBlank String idSede) {
+        @NotBlank String estadoRegistro) {
 }

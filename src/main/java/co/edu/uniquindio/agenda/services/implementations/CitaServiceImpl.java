@@ -3,7 +3,6 @@ package co.edu.uniquindio.agenda.services.implementations;
 import co.edu.uniquindio.agenda.dto.cita.*;
 import co.edu.uniquindio.agenda.exceptions.cita.*;
 import co.edu.uniquindio.agenda.exceptions.cuenta.CuentaNoEncontradaException;
-import co.edu.uniquindio.agenda.exceptions.cuenta.ProfesionalesNoEncontradosException;
 import co.edu.uniquindio.agenda.exceptions.especialidad.EspecialidadNoEncontradaException;
 import co.edu.uniquindio.agenda.exceptions.sede.SedeNoEncontradaException;
 import co.edu.uniquindio.agenda.models.documents.Cita;
@@ -11,8 +10,9 @@ import co.edu.uniquindio.agenda.models.documents.Cuenta;
 import co.edu.uniquindio.agenda.models.documents.Especialidad;
 import co.edu.uniquindio.agenda.models.documents.Sede;
 import co.edu.uniquindio.agenda.models.enums.EstadoCita;
+import co.edu.uniquindio.agenda.models.enums.EstadoRegistro;
 import co.edu.uniquindio.agenda.models.vo.Paciente;
-import co.edu.uniquindio.agenda.models.vo.Profesional;
+import co.edu.uniquindio.agenda.models.vo.Usuario;
 import co.edu.uniquindio.agenda.repository.ICitaRepository;
 import co.edu.uniquindio.agenda.repository.ICuentaRepository;
 import co.edu.uniquindio.agenda.repository.IEspecialidadRepository;
@@ -45,6 +45,7 @@ public class CitaServiceImpl implements ICitaService {
             ObjectId objectMedico = new ObjectId( crearCitaDTO.idMedico() );
             ObjectId objectPaciente = new ObjectId( crearCitaDTO.idPaciente() );
             ObjectId objectSede = new ObjectId( crearCitaDTO.idSede() );
+            ObjectId objectUsuario = new ObjectId( crearCitaDTO.usuarioCreacion() );
 
             Cita crearCita = new Cita();
             crearCita.setCodigo( codigoCita );
@@ -56,6 +57,8 @@ public class CitaServiceImpl implements ICitaService {
             crearCita.setConsultorio( crearCitaDTO.consultorio() );
             crearCita.setComentarios( crearCitaDTO.comentarios() );
             crearCita.setEstado( EstadoCita.PROGRAMADA );
+            crearCita.setEstadoRegistro( EstadoRegistro.ACTIVO );
+            crearCita.setUsuarioCreacion( objectUsuario );
 
             citaRepository.save( crearCita );
 
@@ -89,6 +92,7 @@ public class CitaServiceImpl implements ICitaService {
             Cita cita = encontrarCitaPorId( idCita );
             Paciente paciente = encontrarPacientePorId( cita.getIdPaciente().toHexString() );
             Sede sede = encontrarSedePorId( cita.getIdSede().toHexString() );
+            Usuario usuario = encontrarCuentaPorId( cita.getUsuarioCreacion().toHexString() );
 
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
             String fechaCita = cita.getFechaCita().format(dateFormatter);
@@ -109,7 +113,9 @@ public class CitaServiceImpl implements ICitaService {
                     horaCita,
                     cita.getConsultorio(),
                     cita.getComentarios(),
-                    cita.getEstado().toString()
+                    cita.getEstado().toString(),
+                    cita.getEstadoRegistro().getValue(),
+                    usuario.getNombres() + " " + usuario.getApellidos()
             );
 
         }catch (CitaNoEncontradaException e) {
@@ -191,7 +197,7 @@ public class CitaServiceImpl implements ICitaService {
         }
     }
 
-    private Profesional encontrarProfesionalPorId(String id) throws ProfesionalesNoEncontradosException {
+    private Usuario encontrarCuentaPorId(String id) throws CuentaNoEncontradaException {
         try {
             Optional<Cuenta> cuenta = cuentaRepository.findById( id );
 
@@ -199,14 +205,10 @@ public class CitaServiceImpl implements ICitaService {
                 throw new CuentaNoEncontradaException("La Cuenta no se encuentra registrado en la Clínica.");
             }
 
-            if( !(cuenta.get().getUsuario() instanceof Profesional) ){
-                throw new PacienteNoAfiliadoException("El id no esta asociado a un profesionañ.");
-            }
-
-            return (Profesional) cuenta.get().getUsuario();
+            return cuenta.get().getUsuario();
 
         } catch (Exception e){
-            throw new ProfesionalesNoEncontradosException("El profesional no fue encontrado " + e.getMessage());
+            throw new CuentaNoEncontradaException("La cuenta que creo el registro no fue encontrado " + e.getMessage());
         }
     }
 

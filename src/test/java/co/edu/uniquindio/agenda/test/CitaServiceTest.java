@@ -26,7 +26,8 @@ public class CitaServiceTest {
                 "66ed9b9d33719f5396d8490c",
                 LocalDateTime.of(2024, 9, 14, 15, 30),
                 Consultorio.UNO.getValue(),
-                "Paciente en condiciones aceptables de salud"
+                "Paciente en condiciones aceptables de salud",
+                "66eb9e55ad1866569a4c7b77"
         );
 
         String mensaje = citaService.crearCitaMedica( registrarCitaDTO );

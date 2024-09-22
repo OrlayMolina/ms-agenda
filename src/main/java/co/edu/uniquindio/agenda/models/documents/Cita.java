@@ -2,6 +2,7 @@ package co.edu.uniquindio.agenda.models.documents;
 
 import co.edu.uniquindio.agenda.models.enums.Consultorio;
 import co.edu.uniquindio.agenda.models.enums.EstadoCita;
+import co.edu.uniquindio.agenda.models.enums.EstadoRegistro;
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -29,6 +30,8 @@ public class Cita {
     private String consultorio;
     private String comentarios;
     private EstadoCita estado;
+    private EstadoRegistro estadoRegistro;
+    private ObjectId usuarioCreacion;
 
     public Cita(String codigo,
                 ObjectId idMedico,
@@ -38,7 +41,9 @@ public class Cita {
                 LocalDateTime fechaCita,
                 String consultorio,
                 String comentarios,
-                EstadoCita estado) {
+                EstadoCita estado,
+                EstadoRegistro estadoRegistro,
+                ObjectId usuarioCreacion) {
         this.codigo = codigo;
         this.idMedico = idMedico;
         this.idPaciente = idPaciente;
@@ -48,5 +53,7 @@ public class Cita {
         this.consultorio = consultorio;
         this.comentarios = comentarios;
         this.estado = estado;
+        this.estadoRegistro = estadoRegistro;
+        this.usuarioCreacion = usuarioCreacion;
     }
 }

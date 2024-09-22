@@ -17,5 +17,7 @@ public record EditarCitaDTO(
         LocalDateTime fechaCita,
         @NotBlank String consultorio,
         @NotBlank String comentarios,
-        @NotBlank String estado) {
+        @NotBlank String estado,
+        @NotBlank String estadoRegistro,
+        @NotBlank String usuarioCreacion) {
 }

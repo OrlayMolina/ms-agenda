@@ -1,13 +1,7 @@
 package co.edu.uniquindio.agenda.services.implementations;
 
-import co.edu.uniquindio.agenda.dto.cuenta.CrearCuentaPacienteDTO;
-import co.edu.uniquindio.agenda.dto.cuenta.CrearCuentaProfesionalDTO;
-import co.edu.uniquindio.agenda.dto.cuenta.EditarCuentaPacienteDTO;
-import co.edu.uniquindio.agenda.dto.cuenta.ItemProfesionalDTO;
-import co.edu.uniquindio.agenda.exceptions.cuenta.CuentaNoCreadaException;
-import co.edu.uniquindio.agenda.exceptions.cuenta.CuentaNoEditadaException;
-import co.edu.uniquindio.agenda.exceptions.cuenta.CuentaNoEncontradaException;
-import co.edu.uniquindio.agenda.exceptions.cuenta.ProfesionalesNoEncontradosException;
+import co.edu.uniquindio.agenda.dto.cuenta.*;
+import co.edu.uniquindio.agenda.exceptions.cuenta.*;
 import co.edu.uniquindio.agenda.exceptions.especialidad.EspecialidadNoEncontradaException;
 import co.edu.uniquindio.agenda.models.documents.Cuenta;
 import co.edu.uniquindio.agenda.models.documents.Especialidad;
@@ -35,6 +29,42 @@ public class CuentaServiceImpl implements ICuentaService {
     private final ICuentaRepository cuentaRepository;
     private final IEspecialidadRepository especialidadRepository;
     private final GenerarCodigo generarCodigo;
+
+    @Override
+    public String activarCuenta(String email, String codigoValidacion) throws CuentaNoActivadaException {
+        try {
+            Optional<Cuenta> cuentaOptional = cuentaRepository.findByEmail(email);
+
+            if (cuentaOptional.isEmpty()) {
+                throw new Exception("No se encontró una cuenta con ese email");
+            }
+
+            Cuenta cuenta = cuentaOptional.get();
+
+            if (cuenta.getEstado() != EstadoCuenta.INACTIVO) {
+                throw new Exception("La cuenta ya está activa o ha sido eliminada");
+            }
+
+            CodigoValidacion codigoValidacionCuenta = cuenta.getCodigoValidacionRegistro();
+
+            if (codigoValidacionCuenta == null ||
+                    !codigoValidacionCuenta.getCodigo().equals(codigoValidacion) ||
+                    codigoValidacionCuenta.getFechaCreacion().plusMinutes(15).isBefore(LocalDateTime.now())) {
+
+                throw new Exception("El código de validación es incorrecto o ha expirado");
+            }
+
+            cuenta.setEstado(EstadoCuenta.ACTIVO);
+            cuenta.setCodigoValidacionRegistro(null);
+
+            cuentaRepository.save(cuenta);
+
+            return "La cuenta fue activada correctamente";
+        }catch(Exception e){
+            throw new CuentaNoActivadaException("Error al activar la cuenta." +e.getMessage());
+        }
+    }
+
     @Override
     public Cuenta crearCuentaPaciente(CrearCuentaPacienteDTO cuenta) throws CuentaNoCreadaException {
         try {
@@ -150,6 +180,87 @@ public class CuentaServiceImpl implements ICuentaService {
     @Override
     public Cuenta editarCuentaPaciente(EditarCuentaPacienteDTO cuenta) throws CuentaNoEditadaException {
         return null;
+    }
+
+    @Override
+    public String enviarCodigoRecuperacionPassword(String correo) throws CodigoValidacionNoEnviadoException {
+        try {
+            Optional<Cuenta>  cuentaOptional = cuentaRepository.findByEmail(correo);
+
+            if(cuentaOptional.isEmpty()){
+                throw new CodigoValidacionNoEnviadoException("No se encontró una cuenta con ese email ");
+            }
+
+            Cuenta cuenta = cuentaOptional.get();
+            String codigoValidacion = generarCodigo.generarCodigoAleatorio();
+
+            cuenta.setCodigoValidacionPassword(new CodigoValidacion(
+                    codigoValidacion,
+                    LocalDateTime.now()
+            ));
+
+            cuentaRepository.save(cuenta);
+
+
+            return "Se ha enviado un correo con el código de validación";
+        }catch (Exception e){
+            throw new CodigoValidacionNoEnviadoException("Error generando codigo devalidación." +e.getMessage());
+        }
+    }
+
+    @Override
+    public String cambiarPassword(CambiarPasswordDTO cambiarPasswordDTO) throws PasswordNoEditadaException {
+        try {
+            Optional<Cuenta>  cuentaOptional = cuentaRepository.findByEmail(cambiarPasswordDTO.email());
+
+            if (cuentaOptional.isEmpty()){
+                throw new PasswordNoEditadaException("El correo dado no esta registrado");
+            }
+            Cuenta cuenta = cuentaOptional.get();
+            CodigoValidacion codigoValidacion = cuenta.getCodigoValidacionPassword();
+
+            if (codigoValidacion.getCodigo().
+                    equals(cambiarPasswordDTO.codigoVerificacion()))
+            {
+                if(codigoValidacion.getFechaCreacion().
+                        plusMinutes(15).isBefore(LocalDateTime.now()))
+                {
+                    cuenta.setPassword(cambiarPasswordDTO.passwordNueva());
+                    cuentaRepository.save(cuenta);
+                }
+                else{
+                    throw new PasswordNoEditadaException("El código ya expiro");
+                }
+            }
+            else{
+                throw new PasswordNoEditadaException("El código de validación es incorrecto");
+            }
+
+            return "Se ha cambiado su contraseña";
+        }catch (Exception e){
+            throw new PasswordNoEditadaException("La contraseña no fue actualizada." + e.getMessage());
+        }
+    }
+
+    @Override
+    public String iniciarSesion(LoginDTO loginDTO) throws SesionNoIniciadaException {
+        try {
+            Optional<Cuenta>  cuentaOptional = cuentaRepository.findByEmail(loginDTO.correo());
+
+            if(cuentaOptional.isEmpty()){
+                throw new SesionNoIniciadaException("El correo dado no es encontrado ");
+            }
+
+            Cuenta cuenta = cuentaOptional.get();
+
+            if(!cuenta.getPassword().equals(loginDTO.password())) {
+                throw new SesionNoIniciadaException("la contraseña es incorrecta");
+            }
+
+            return "TOKE_JWT";
+        }catch(Exception e){
+            throw new SesionNoIniciadaException("Sesión no fue iniciada." + e.getMessage());
+        }
     }
 
     @Override

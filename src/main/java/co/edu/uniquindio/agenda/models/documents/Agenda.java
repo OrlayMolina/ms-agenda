@@ -7,6 +7,8 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Document("agendas")
 @Getter
 @Setter
@@ -18,9 +20,19 @@ public class Agenda {
     @Id
     @EqualsAndHashCode.Include
     private String id;
-    private ObjectId idMedico;
-    private ObjectId idCita;
-    private DuracionAgenda duracion;
-    private Especialidad especialidad;
+    private List<ObjectId> idMedico;
+    private String duracion;
+    private String especialidad;
     private EstadoAgenda estado;
+
+    public Agenda(
+            List<ObjectId> idMedico,
+            String duracion,
+            String especialidad,
+            EstadoAgenda estado) {
+        this.idMedico = idMedico;
+        this.duracion = duracion;
+        this.especialidad = especialidad;
+        this.estado = estado;
+    }
 }
