@@ -1,22 +1,22 @@
-package co.edu.uniquindio.agenda.exceptions.cita;
+package co.edu.uniquindio.agenda.controllers.exceptions.especialidad;
 
 import co.edu.uniquindio.agenda.models.enums.TipoError;
 
-public class PacienteNoAfiliadoException extends Exception{
+public class EspecialidadNoEncontradaException extends Exception{
 
     private final TipoError tipoError;
 
-    public PacienteNoAfiliadoException(String mensaje){
+    public EspecialidadNoEncontradaException(String mensaje){
         super(mensaje);
         this.tipoError = TipoError.UNKNOWN_ERROR;
     }
 
-    public PacienteNoAfiliadoException(String mensaje, TipoError tipoError) {
+    public EspecialidadNoEncontradaException(String mensaje, TipoError tipoError) {
         super(mensaje);
         this.tipoError = tipoError;
     }
 
-    public PacienteNoAfiliadoException(String mensaje, TipoError tipoError, Throwable causa) {
+    public EspecialidadNoEncontradaException(String mensaje, TipoError tipoError, Throwable causa) {
         super(mensaje, causa);
         this.tipoError = tipoError;
     }

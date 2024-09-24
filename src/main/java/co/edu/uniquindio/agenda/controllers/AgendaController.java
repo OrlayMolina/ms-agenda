@@ -1,14 +1,10 @@
 package co.edu.uniquindio.agenda.controllers;
 
 import co.edu.uniquindio.agenda.dto.agenda.InformacionAgendaDTO;
-import co.edu.uniquindio.agenda.dto.cita.InformacionCitaDTO;
 import co.edu.uniquindio.agenda.dto.cuenta.MensajeDTO;
-import co.edu.uniquindio.agenda.exceptions.agenda.AgendaNoEncontradaException;
-import co.edu.uniquindio.agenda.exceptions.cita.CitaNoEncontradaException;
-import co.edu.uniquindio.agenda.exceptions.cita.PacienteNoAfiliadoException;
-import co.edu.uniquindio.agenda.exceptions.cuenta.ProfesionalesNoEncontradosException;
-import co.edu.uniquindio.agenda.exceptions.especialidad.EspecialidadNoEncontradaException;
-import co.edu.uniquindio.agenda.exceptions.sede.SedeNoEncontradaException;
+import co.edu.uniquindio.agenda.controllers.exceptions.agenda.AgendaNoEncontradaException;
+import co.edu.uniquindio.agenda.controllers.exceptions.cuenta.ProfesionalesNoEncontradosException;
+import co.edu.uniquindio.agenda.controllers.exceptions.especialidad.EspecialidadNoEncontradaException;
 import co.edu.uniquindio.agenda.services.interfaces.IAgendaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

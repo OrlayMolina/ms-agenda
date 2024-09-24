@@ -12,5 +12,8 @@ public record ItemCitaDTO(
         @NotBlank String paciente,
         @NotBlank String especialidad,
         @NotBlank String nroDocumento,
-        @NotBlank String estado) {
+        @NotBlank String estado,
+        @NotBlank String usuarioCreacion,
+        @NotBlank String fechaCreacion,
+        @NotBlank String horaCreacion) {
 }

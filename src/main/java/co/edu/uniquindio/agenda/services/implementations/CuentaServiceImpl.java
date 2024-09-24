@@ -1,10 +1,10 @@
 package co.edu.uniquindio.agenda.services.implementations;
 
 import co.edu.uniquindio.agenda.config.JWTUtils;
+import co.edu.uniquindio.agenda.controllers.exceptions.cuenta.*;
 import co.edu.uniquindio.agenda.dto.cuenta.*;
 import co.edu.uniquindio.agenda.dto.email.EmailDTO;
-import co.edu.uniquindio.agenda.exceptions.cuenta.*;
-import co.edu.uniquindio.agenda.exceptions.especialidad.EspecialidadNoEncontradaException;
+import co.edu.uniquindio.agenda.controllers.exceptions.especialidad.EspecialidadNoEncontradaException;
 import co.edu.uniquindio.agenda.models.documents.Cuenta;
 import co.edu.uniquindio.agenda.models.documents.Especialidad;
 import co.edu.uniquindio.agenda.models.enums.*;
@@ -267,7 +267,7 @@ public class CuentaServiceImpl implements ICuentaService {
             return new TokenDTO( jwtUtils.generarToken(cuenta.getEmail(), map) );
 
         }catch(Exception e){
-            throw new SesionNoIniciadaException("Sesión no fue iniciada." + e.getMessage());
+            throw new SesionNoIniciadaException("Sesión no fue iniciada. " + e.getMessage());
         }
     }
 
@@ -362,7 +362,7 @@ public class CuentaServiceImpl implements ICuentaService {
         return passwordEncoder.encode( password );
     }
 
-    private Map<String, Object> construirClaims(Cuenta cuenta) {
+    public Map<String, Object> construirClaims(Cuenta cuenta) {
         return Map.of(
                 "rol", cuenta.getRol(),
                 "nombre", cuenta.getUsuario().getNombres(),

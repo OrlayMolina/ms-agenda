@@ -1,9 +1,9 @@
 package co.edu.uniquindio.agenda.services.interfaces;
 
+import co.edu.uniquindio.agenda.controllers.exceptions.cita.*;
 import co.edu.uniquindio.agenda.dto.cita.*;
-import co.edu.uniquindio.agenda.exceptions.cita.*;
-import co.edu.uniquindio.agenda.exceptions.cuenta.ProfesionalesNoEncontradosException;
-import co.edu.uniquindio.agenda.exceptions.sede.SedeNoEncontradaException;
+import co.edu.uniquindio.agenda.controllers.exceptions.cuenta.ProfesionalesNoEncontradosException;
+import co.edu.uniquindio.agenda.controllers.exceptions.sede.SedeNoEncontradaException;
 
 import java.time.LocalDateTime;
 import java.util.List;

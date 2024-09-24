@@ -4,9 +4,11 @@ import co.edu.uniquindio.agenda.dto.cuenta.CrearCuentaPacienteDTO;
 import co.edu.uniquindio.agenda.dto.cuenta.CrearCuentaProfesionalDTO;
 import co.edu.uniquindio.agenda.dto.cuenta.ItemProfesionalDTO;
 import co.edu.uniquindio.agenda.dto.cuenta.MensajeDTO;
-import co.edu.uniquindio.agenda.exceptions.cuenta.CuentaNoCreadaException;
-import co.edu.uniquindio.agenda.exceptions.cuenta.ProfesionalesNoEncontradosException;
+import co.edu.uniquindio.agenda.controllers.exceptions.cuenta.CuentaNoCreadaException;
+import co.edu.uniquindio.agenda.controllers.exceptions.cuenta.ProfesionalesNoEncontradosException;
 import co.edu.uniquindio.agenda.services.interfaces.ICuentaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,30 +19,12 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/cuentas")
+@SecurityRequirement(name = "bearerAuth")
 public class CuentaController {
 
     private final ICuentaService cuentaService;
 
-    @PostMapping("/crear-paciente")
-    public ResponseEntity<MensajeDTO<String>> crearCuentaPaciente(@Valid @RequestBody CrearCuentaPacienteDTO cuentaPacienteDTO) throws CuentaNoCreadaException {
-        try {
-            cuentaService.crearCuentaPaciente(cuentaPacienteDTO);
-            return ResponseEntity.ok().body( new MensajeDTO<>( false, "El paciente fue creado exitosamente."));
-        } catch (Exception e){
-            throw new CuentaNoCreadaException("El paciente no fue creado " + e.getMessage());
-        }
-    }
-
-    @PostMapping("/crear-profesional")
-    public ResponseEntity<MensajeDTO<String>> crearCuentaProfesional(@Valid @RequestBody CrearCuentaProfesionalDTO cuentaProfesionalDTO) throws CuentaNoCreadaException {
-        try {
-            cuentaService.crearCuentaProfesional(cuentaProfesionalDTO);
-            return ResponseEntity.ok().body( new MensajeDTO<>( false, "El profesional fue creado exitosamente."));
-        } catch (Exception e){
-            throw new CuentaNoCreadaException("El profesional no fue creado " + e.getMessage());
-        }
-    }
-
+    @Operation(summary = "Listar Profesionales", description = "Permite acceder a todos los atributos del profesional creado en la clínica")
     @GetMapping("/listar-profesionales")
     public ResponseEntity<MensajeDTO<List<ItemProfesionalDTO>>> listarProfesionales() throws ProfesionalesNoEncontradosException {
         return ResponseEntity.ok().body( new MensajeDTO<>(false, cuentaService.listarProfesionales()) );

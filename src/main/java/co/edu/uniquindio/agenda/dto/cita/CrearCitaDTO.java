@@ -10,9 +10,12 @@ public record CrearCitaDTO(
         @NotBlank String idMedico,
         @NotBlank String idPaciente,
         @NotBlank String idSede,
-        @Future(message = "La cita médica no puede ser aginada en una fecha anterior a la actual.")
+        @Future(message = "La cita médica no puede ser asignada en una fecha anterior a la actual.")
         LocalDateTime fechaCita,
+        @NotBlank String especialidad,
+        @NotBlank String duracion,
         @NotBlank String consultorio,
         @NotBlank String comentarios,
-        @NotBlank String usuarioCreacion) {
+        @NotBlank String usuarioCreacion,
+        LocalDateTime fechaCreacion) {
 }

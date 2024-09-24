@@ -17,9 +17,13 @@ public record InformacionCitaDTO(
         @NotNull boolean confirmada,
         @NotBlank String fechaCita,
         @NotBlank String horaCita,
+        @NotBlank String especialidad,
+        @NotBlank String duracion,
         @NotBlank String consultorio,
         @NotBlank String comentarios,
         @NotBlank String estado,
         @NotBlank String estadoRegistro,
-        @NotBlank String usuarioCreacion) {
+        @NotBlank String usuarioCreacion,
+        @NotBlank String fechaCreacion,
+        @NotBlank String horaCreacion) {
 }

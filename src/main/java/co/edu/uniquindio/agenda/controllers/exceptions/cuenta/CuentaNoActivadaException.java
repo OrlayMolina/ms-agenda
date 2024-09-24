@@ -1,22 +1,22 @@
-package co.edu.uniquindio.agenda.exceptions.cita;
+package co.edu.uniquindio.agenda.controllers.exceptions.cuenta;
 
 import co.edu.uniquindio.agenda.models.enums.TipoError;
 
-public class CitaNoCreadaException extends Exception{
+public class CuentaNoActivadaException extends Exception{
 
     private final TipoError tipoError;
 
-    public CitaNoCreadaException(String mensaje){
+    public CuentaNoActivadaException(String mensaje){
         super(mensaje);
         this.tipoError = TipoError.UNKNOWN_ERROR;
     }
 
-    public CitaNoCreadaException(String mensaje, TipoError tipoError) {
+    public CuentaNoActivadaException(String mensaje, TipoError tipoError) {
         super(mensaje);
         this.tipoError = tipoError;
     }
 
-    public CitaNoCreadaException(String mensaje, TipoError tipoError, Throwable causa) {
+    public CuentaNoActivadaException(String mensaje, TipoError tipoError, Throwable causa) {
         super(mensaje, causa);
         this.tipoError = tipoError;
     }

@@ -1,4 +1,4 @@
-package co.edu.uniquindio.agenda.exceptions.cuenta;
+package co.edu.uniquindio.agenda.controllers.exceptions.cuenta;
 
 import co.edu.uniquindio.agenda.models.enums.TipoError;
 

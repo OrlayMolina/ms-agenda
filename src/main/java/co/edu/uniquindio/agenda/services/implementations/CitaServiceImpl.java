@@ -1,11 +1,11 @@
 package co.edu.uniquindio.agenda.services.implementations;
 
+import co.edu.uniquindio.agenda.controllers.exceptions.cita.*;
 import co.edu.uniquindio.agenda.dto.cita.*;
-import co.edu.uniquindio.agenda.exceptions.cita.*;
-import co.edu.uniquindio.agenda.exceptions.cuenta.CuentaNoEncontradaException;
-import co.edu.uniquindio.agenda.exceptions.cuenta.ProfesionalesNoEncontradosException;
-import co.edu.uniquindio.agenda.exceptions.especialidad.EspecialidadNoEncontradaException;
-import co.edu.uniquindio.agenda.exceptions.sede.SedeNoEncontradaException;
+import co.edu.uniquindio.agenda.controllers.exceptions.cuenta.CuentaNoEncontradaException;
+import co.edu.uniquindio.agenda.controllers.exceptions.cuenta.ProfesionalesNoEncontradosException;
+import co.edu.uniquindio.agenda.controllers.exceptions.especialidad.EspecialidadNoEncontradaException;
+import co.edu.uniquindio.agenda.controllers.exceptions.sede.SedeNoEncontradaException;
 import co.edu.uniquindio.agenda.models.documents.Cita;
 import co.edu.uniquindio.agenda.models.documents.Cuenta;
 import co.edu.uniquindio.agenda.models.documents.Especialidad;
@@ -57,11 +57,14 @@ public class CitaServiceImpl implements ICitaService {
             crearCita.setIdSede( objectSede );
             crearCita.setConfirmada( false );
             crearCita.setFechaCita( crearCitaDTO.fechaCita() );
+            crearCita.setEspecialidad( crearCitaDTO.especialidad() );
+            crearCita.setDuracion( crearCitaDTO.duracion() );
             crearCita.setConsultorio( crearCitaDTO.consultorio() );
             crearCita.setComentarios( crearCitaDTO.comentarios() );
             crearCita.setEstado( EstadoCita.PROGRAMADA );
             crearCita.setEstadoRegistro( EstadoRegistro.ACTIVO.getValue() );
             crearCita.setUsuarioCreacion( objectUsuario );
+            crearCita.setFechaCreacion( crearCitaDTO.fechaCreacion() );
 
             citaRepository.save( crearCita );
 
@@ -99,9 +102,11 @@ public class CitaServiceImpl implements ICitaService {
 
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
             String fechaCita = cita.getFechaCita().format(dateFormatter);
+            String fechaCreacion = cita.getFechaCita().format(dateFormatter);
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
             String horaCita = cita.getFechaCita().format(formatter);
+            String horaCreacion = cita.getFechaCita().format(formatter);
 
             return new InformacionCitaDTO(
                     cita.getId(),
@@ -114,11 +119,15 @@ public class CitaServiceImpl implements ICitaService {
                     cita.isConfirmada(),
                     fechaCita,
                     horaCita,
+                    cita.getEspecialidad(),
+                    cita.getDuracion(),
                     cita.getConsultorio(),
                     cita.getComentarios(),
                     cita.getEstado().toString(),
                     cita.getEstadoRegistro(),
-                    usuario.getNombres() + " " + usuario.getApellidos()
+                    usuario.getNombres() + " " + usuario.getApellidos(),
+                    fechaCreacion,
+                    horaCreacion
             );
 
         }catch (CitaNoEncontradaException e) {

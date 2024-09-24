@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum Ciudad {
     ARMENIA("Armenia"),
-    CALARCA("Calarcá"),
+    CALARCA("Calárca"),
     MANIZALES("Manizales"),
     PEREIRA("Pereira"),
     DOSQUEBRADAS("Dosquebradas");

@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum PlanComplementario {
-    PREFERENCIAL("Plan Presencial"),
+    PREFERENCIAL("Plan Preferencial"),
     PREMIUM("Plan Premium"),
     SIN_PLAN("Paciente sin Plan Complementario");
 

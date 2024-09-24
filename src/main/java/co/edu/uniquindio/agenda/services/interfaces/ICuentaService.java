@@ -1,7 +1,7 @@
 package co.edu.uniquindio.agenda.services.interfaces;
 
+import co.edu.uniquindio.agenda.controllers.exceptions.cuenta.*;
 import co.edu.uniquindio.agenda.dto.cuenta.*;
-import co.edu.uniquindio.agenda.exceptions.cuenta.*;
 import co.edu.uniquindio.agenda.models.documents.Cuenta;
 
 import java.util.List;

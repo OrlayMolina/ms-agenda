@@ -27,11 +27,14 @@ public class Cita {
     private ObjectId idSede;
     private boolean confirmada;
     private LocalDateTime fechaCita;
+    private String especialidad;
+    private String duracion;
     private String consultorio;
     private String comentarios;
     private EstadoCita estado;
     private String estadoRegistro;
     private ObjectId usuarioCreacion;
+    private LocalDateTime fechaCreacion;
 
     public Cita(String codigo,
                 ObjectId idMedico,
@@ -39,21 +42,27 @@ public class Cita {
                 ObjectId idSede,
                 boolean confirmada,
                 LocalDateTime fechaCita,
+                String especialidad,
+                String duracion,
                 String consultorio,
                 String comentarios,
                 EstadoCita estado,
                 String estadoRegistro,
-                ObjectId usuarioCreacion) {
+                ObjectId usuarioCreacion,
+                LocalDateTime fechaCreacion) {
         this.codigo = codigo;
         this.idMedico = idMedico;
         this.idPaciente = idPaciente;
         this.idSede = idSede;
         this.confirmada = confirmada;
         this.fechaCita = fechaCita;
+        this.especialidad = especialidad;
+        this.duracion = duracion;
         this.consultorio = consultorio;
         this.comentarios = comentarios;
         this.estado = estado;
         this.estadoRegistro = estadoRegistro;
         this.usuarioCreacion = usuarioCreacion;
+        this.fechaCreacion = fechaCreacion;
     }
 }

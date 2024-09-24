@@ -2,10 +2,10 @@ package co.edu.uniquindio.agenda.test;
 
 import co.edu.uniquindio.agenda.dto.agenda.CrearAgendaDTO;
 import co.edu.uniquindio.agenda.dto.agenda.InformacionAgendaDTO;
-import co.edu.uniquindio.agenda.exceptions.agenda.AgendaNoCreadaException;
-import co.edu.uniquindio.agenda.exceptions.agenda.AgendaNoEncontradaException;
-import co.edu.uniquindio.agenda.exceptions.cuenta.ProfesionalesNoEncontradosException;
-import co.edu.uniquindio.agenda.exceptions.especialidad.EspecialidadNoEncontradaException;
+import co.edu.uniquindio.agenda.controllers.exceptions.agenda.AgendaNoCreadaException;
+import co.edu.uniquindio.agenda.controllers.exceptions.agenda.AgendaNoEncontradaException;
+import co.edu.uniquindio.agenda.controllers.exceptions.cuenta.ProfesionalesNoEncontradosException;
+import co.edu.uniquindio.agenda.controllers.exceptions.especialidad.EspecialidadNoEncontradaException;
 import co.edu.uniquindio.agenda.models.enums.DuracionAgenda;
 import co.edu.uniquindio.agenda.services.interfaces.IAgendaService;
 import org.bson.types.ObjectId;
