@@ -34,7 +34,7 @@ public class EmailServiceImpl implements IEmailService {
                 .from(smtpUsername)
                 .to(emailDTO.destinatario())
                 .withSubject(emailDTO.asunto())
-                .withPlainText(emailDTO.cuerpo())
+                .withHTMLText(emailDTO.cuerpo())
                 .buildEmail();
 
 

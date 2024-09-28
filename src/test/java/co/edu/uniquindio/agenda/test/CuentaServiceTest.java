@@ -39,7 +39,7 @@ public class CuentaServiceTest {
                 "3127849645",
                 Regimen.CONTRIBUTIVO,
                 PlanComplementario.SIN_PLAN.getValue(),
-                "andresmolina@gmail.com",
+                "andresmolinagomez56@gmail.com",
                 "12345678"
         );
 

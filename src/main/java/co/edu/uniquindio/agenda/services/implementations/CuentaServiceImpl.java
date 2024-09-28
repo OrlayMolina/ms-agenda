@@ -1,6 +1,7 @@
 package co.edu.uniquindio.agenda.services.implementations;
 
 import co.edu.uniquindio.agenda.config.JWTUtils;
+import co.edu.uniquindio.agenda.config.PlantillasEmailConfig;
 import co.edu.uniquindio.agenda.controllers.exceptions.cuenta.*;
 import co.edu.uniquindio.agenda.dto.cuenta.*;
 import co.edu.uniquindio.agenda.dto.email.EmailDTO;
@@ -114,7 +115,9 @@ public class CuentaServiceImpl implements ICuentaService {
             nuevaCuenta.setPassword( encriptarPassword(cuenta.password()) );
             nuevaCuenta.setEstado( EstadoCuenta.INACTIVO );
 
-            emailService.enviarCorreo( new EmailDTO(cuenta.email(), "Asunto mensaje", "Hola") );
+            String body = PlantillasEmailConfig.bodyCreacionCuenta.replace("[Nombres]", cuenta.nombres()).replace("[Apellidos]", cuenta.apellidos()).replace("[Codigo_Activacion]", codigoAleatorio);
+
+            emailService.enviarCorreo( new EmailDTO(cuenta.email(), "Asunto mensaje", body) );
 
             return cuentaRepository.save( nuevaCuenta );
         } catch (Exception e){
