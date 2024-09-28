@@ -115,7 +115,11 @@ public class CuentaServiceImpl implements ICuentaService {
             nuevaCuenta.setPassword( encriptarPassword(cuenta.password()) );
             nuevaCuenta.setEstado( EstadoCuenta.INACTIVO );
 
-            String body = PlantillasEmailConfig.bodyCreacionCuenta.replace("[Nombres]", cuenta.nombres()).replace("[Apellidos]", cuenta.apellidos()).replace("[Codigo_Activacion]", codigoAleatorio);
+            String body = PlantillasEmailConfig.bodyCreacionCuenta.replace("[Nombres]",
+                    cuenta.nombres()).replace("[Apellidos]",
+                    cuenta.apellidos()).replace("[Codigo_Activacion]",
+                    codigoAleatorio
+            );
 
             emailService.enviarCorreo( new EmailDTO(cuenta.email(), "Asunto mensaje", body) );
 
