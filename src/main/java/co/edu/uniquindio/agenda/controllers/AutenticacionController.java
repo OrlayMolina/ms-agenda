@@ -1,16 +1,21 @@
 package co.edu.uniquindio.agenda.controllers;
 
+import co.edu.uniquindio.agenda.controllers.exceptions.agenda.AgendaNoEncontradaException;
 import co.edu.uniquindio.agenda.controllers.exceptions.cuenta.CuentaNoCreadaException;
+import co.edu.uniquindio.agenda.controllers.exceptions.cuenta.ProfesionalesNoEncontradosException;
+import co.edu.uniquindio.agenda.controllers.exceptions.especialidad.EspecialidadNoEncontradaException;
+import co.edu.uniquindio.agenda.dto.agenda.InformacionAgendaDTO;
 import co.edu.uniquindio.agenda.dto.cuenta.*;
+import co.edu.uniquindio.agenda.services.interfaces.IAgendaService;
 import co.edu.uniquindio.agenda.services.interfaces.IAutenticacionService;
 import co.edu.uniquindio.agenda.services.interfaces.ICuentaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -18,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AutenticacionController {
 
     private final IAutenticacionService autenticacionService;
+    private final IAgendaService agendaService;
     private final ICuentaService cuentaService;
 
     @PostMapping("/login")
@@ -25,6 +31,19 @@ public class AutenticacionController {
                                                                      LoginDTO loginDTO) throws Exception {
         TokenDTO tokenDTO = autenticacionService.iniciarSesion(loginDTO);
         return ResponseEntity.ok().body(new MensajeDTO<>(false, tokenDTO));
+    }
+
+    @PostMapping("/confirmar-cuenta")
+    public ResponseEntity<MensajeDTO<String>> activarCuenta(@RequestBody Map<String, String> request) throws Exception {
+        try {
+            String email = request.get("email");
+            String codigoValidacion = request.get("codigo");
+            String resultado = cuentaService.activarCuenta(email, codigoValidacion);
+            return ResponseEntity.ok().body(new MensajeDTO<>(true, resultado));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatusCode.valueOf(500))
+                    .body(new MensajeDTO<>(false, "Error al activar la cuenta: " + e.getMessage()));
+        }
     }
 
     @PostMapping("/crear-paciente")
@@ -45,5 +64,15 @@ public class AutenticacionController {
         } catch (Exception e){
             throw new CuentaNoCreadaException("El profesional no fue creado " + e.getMessage());
         }
+    }
+
+    @GetMapping("/obtener-agendas/{idAgenda}")
+    public ResponseEntity<MensajeDTO<InformacionAgendaDTO>> obtenerAgendas(@PathVariable String idAgenda) throws AgendaNoEncontradaException, ProfesionalesNoEncontradosException {
+        return ResponseEntity.ok().body( new MensajeDTO<>( false, agendaService.obtenerInformacionAgendaDTO( idAgenda )) );
+    }
+
+    @GetMapping("/obtener-agendas-especialidad/{idEspecilidad}")
+    public ResponseEntity<MensajeDTO<InformacionAgendaDTO>> obtenerAgendasPorEspecialidad(@PathVariable String idEspecilidad ) throws AgendaNoEncontradaException, EspecialidadNoEncontradaException, ProfesionalesNoEncontradosException {
+        return ResponseEntity.ok().body( new MensajeDTO<>(false, agendaService.obtenerInformacionAgendaPorEspecialidadDTO( idEspecilidad )));
     }
 }

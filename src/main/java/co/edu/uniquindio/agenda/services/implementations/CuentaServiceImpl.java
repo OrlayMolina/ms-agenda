@@ -373,6 +373,7 @@ public class CuentaServiceImpl implements ICuentaService {
         return Map.of(
                 "rol", cuenta.getRol(),
                 "nombre", cuenta.getUsuario().getNombres(),
+                "apellido", cuenta.getUsuario().getApellidos(),
                 "id", cuenta.getId()
         );
     }
