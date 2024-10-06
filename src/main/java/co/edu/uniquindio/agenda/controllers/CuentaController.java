@@ -1,11 +1,7 @@
 package co.edu.uniquindio.agenda.controllers;
 
-import co.edu.uniquindio.agenda.dto.cuenta.CrearCuentaPacienteDTO;
-import co.edu.uniquindio.agenda.dto.cuenta.CrearCuentaProfesionalDTO;
-import co.edu.uniquindio.agenda.dto.cuenta.ItemProfesionalDTO;
-import co.edu.uniquindio.agenda.dto.cuenta.MensajeDTO;
-import co.edu.uniquindio.agenda.controllers.exceptions.cuenta.CuentaNoCreadaException;
-import co.edu.uniquindio.agenda.controllers.exceptions.cuenta.ProfesionalesNoEncontradosException;
+import co.edu.uniquindio.agenda.controllers.exceptions.cuenta.*;
+import co.edu.uniquindio.agenda.dto.cuenta.*;
 import co.edu.uniquindio.agenda.services.interfaces.ICuentaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -29,4 +25,5 @@ public class CuentaController {
     public ResponseEntity<MensajeDTO<List<ItemProfesionalDTO>>> listarProfesionales() throws ProfesionalesNoEncontradosException {
         return ResponseEntity.ok().body( new MensajeDTO<>(false, cuentaService.listarProfesionales()) );
     }
+
 }
