@@ -23,6 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -212,9 +213,12 @@ public class CuentaServiceImpl implements ICuentaService {
 
             cuenta.setCodigoValidacionPassword(new CodigoValidacion(
                     codigoValidacion,
-                    LocalDateTime.now()
+                    LocalDateTime.now(ZoneId.of("America/Bogota"))
             ));
 
+            String body = PlantillasEmailConfig.bodyActualizarPassword.replace("[Codigo_Activacion]", codigoValidacion);
+
+            emailService.enviarCorreo( new EmailDTO(correo, "Cambio de contraseña", body) );
             cuentaRepository.save(cuenta);
 
 
@@ -239,13 +243,13 @@ public class CuentaServiceImpl implements ICuentaService {
                     equals(cambiarPasswordDTO.codigoVerificacion()))
             {
                 if(codigoValidacion.getFechaCreacion().
-                        plusMinutes(15).isBefore(LocalDateTime.now()))
+                        plusMinutes(15).isBefore(LocalDateTime.now(ZoneId.of("America/Bogota"))))
                 {
-                    cuenta.setPassword(cambiarPasswordDTO.passwordNueva());
+                    cuenta.setPassword( encriptarPassword(cambiarPasswordDTO.passwordNueva() ));
                     cuentaRepository.save(cuenta);
                 }
                 else{
-                    throw new PasswordNoEditadaException("El código ya expiro");
+                    throw new PasswordNoEditadaException(" El código ya expiro");
                 }
             }
             else{

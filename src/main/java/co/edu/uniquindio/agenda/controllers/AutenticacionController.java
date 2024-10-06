@@ -1,7 +1,9 @@
 package co.edu.uniquindio.agenda.controllers;
 
 import co.edu.uniquindio.agenda.controllers.exceptions.agenda.AgendaNoEncontradaException;
+import co.edu.uniquindio.agenda.controllers.exceptions.cuenta.CodigoValidacionNoEnviadoException;
 import co.edu.uniquindio.agenda.controllers.exceptions.cuenta.CuentaNoCreadaException;
+import co.edu.uniquindio.agenda.controllers.exceptions.cuenta.PasswordNoEditadaException;
 import co.edu.uniquindio.agenda.controllers.exceptions.cuenta.ProfesionalesNoEncontradosException;
 import co.edu.uniquindio.agenda.controllers.exceptions.especialidad.EspecialidadNoEncontradaException;
 import co.edu.uniquindio.agenda.dto.agenda.InformacionAgendaDTO;
@@ -9,6 +11,7 @@ import co.edu.uniquindio.agenda.dto.cuenta.*;
 import co.edu.uniquindio.agenda.services.interfaces.IAgendaService;
 import co.edu.uniquindio.agenda.services.interfaces.IAutenticacionService;
 import co.edu.uniquindio.agenda.services.interfaces.ICuentaService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
@@ -64,6 +67,18 @@ public class AutenticacionController {
         } catch (Exception e){
             throw new CuentaNoCreadaException("El profesional no fue creado " + e.getMessage());
         }
+    }
+
+    @Operation(summary = "Enviar codigo", description = "Permite enviar codigo para cambiar la contraseña")
+    @PostMapping("/enviar-codigo-password")
+    public ResponseEntity<MensajeDTO<String>> enviarCodigoCambioPassword(@RequestBody String correo) throws CodigoValidacionNoEnviadoException {
+        return ResponseEntity.ok().body( new MensajeDTO<>(false, cuentaService.enviarCodigoRecuperacionPassword(correo)) );
+    }
+
+    @Operation(summary = "Cambiar Contraseña", description = "Permite cambiar la contraseña")
+    @PostMapping("/cambiar-password")
+    public ResponseEntity<MensajeDTO<String>> cambiarPassword(@RequestBody CambiarPasswordDTO cambiarPasswordDTO) throws PasswordNoEditadaException {
+        return ResponseEntity.ok().body( new MensajeDTO<>(false, cuentaService.cambiarPassword(cambiarPasswordDTO)) );
     }
 
     @GetMapping("/obtener-agendas/{idAgenda}")
