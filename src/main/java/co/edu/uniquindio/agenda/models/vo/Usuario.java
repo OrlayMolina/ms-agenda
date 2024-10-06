@@ -1,10 +1,6 @@
 package co.edu.uniquindio.agenda.models.vo;
 
-import co.edu.uniquindio.agenda.models.enums.NivelAcceso;
-import co.edu.uniquindio.agenda.models.enums.TipoDocumento;
 import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
 @Setter

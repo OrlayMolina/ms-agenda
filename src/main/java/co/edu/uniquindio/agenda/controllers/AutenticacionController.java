@@ -71,8 +71,8 @@ public class AutenticacionController {
         return ResponseEntity.ok().body( new MensajeDTO<>( false, agendaService.obtenerInformacionAgendaDTO( idAgenda )) );
     }
 
-    @GetMapping("/obtener-agendas-especialidad/{idEspecilidad}")
-    public ResponseEntity<MensajeDTO<InformacionAgendaDTO>> obtenerAgendasPorEspecialidad(@PathVariable String idEspecilidad ) throws AgendaNoEncontradaException, EspecialidadNoEncontradaException, ProfesionalesNoEncontradosException {
-        return ResponseEntity.ok().body( new MensajeDTO<>(false, agendaService.obtenerInformacionAgendaPorEspecialidadDTO( idEspecilidad )));
+    @PostMapping("/obtener-agendas-especialidad")
+    public ResponseEntity<MensajeDTO<InformacionAgendaDTO>> obtenerAgendasPorEspecialidad(@RequestBody String nombreEspecialidad ) throws AgendaNoEncontradaException, EspecialidadNoEncontradaException, ProfesionalesNoEncontradosException {
+        return ResponseEntity.ok().body( new MensajeDTO<>(false, agendaService.obtenerInformacionAgendaPorEspecialidadDTO( nombreEspecialidad )));
     }
 }

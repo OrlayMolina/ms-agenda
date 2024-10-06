@@ -81,9 +81,8 @@ public class AgendaServiceImpl implements IAgendaService {
     }
 
     @Override
-    public InformacionAgendaDTO obtenerInformacionAgendaPorEspecialidadDTO(String idEspecialidad) throws AgendaNoEncontradaException, ProfesionalesNoEncontradosException, EspecialidadNoEncontradaException {
+    public InformacionAgendaDTO obtenerInformacionAgendaPorEspecialidadDTO(String nombreEspecialidad) throws AgendaNoEncontradaException, ProfesionalesNoEncontradosException, EspecialidadNoEncontradaException {
 
-        String nombreEspecialidad = obtenerNombreEspecialidad( idEspecialidad );
         Agenda agenda = obtenerAgendaPorNombreEspecialidad( nombreEspecialidad );
 
         return obtenerInformacionAgendaDTO( agenda.getId() );
