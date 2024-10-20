@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import org.bson.types.ObjectId;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public record EditarCitaDTO(
         @NotBlank String id,

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class CuentaServiceTest {
                 "Molina",
                 "Tebaida",
                 Nacionalidad.COLOMBIANA,
-                LocalDateTime.of(1998, 9, 14, 15, 30),
+                LocalDate.of(1998, 9, 14),
                 Departamento.QUINDIO.getNombre(),
                 Ciudad.ARMENIA.getValue(),
                 "3127849645",
@@ -51,14 +52,14 @@ public class CuentaServiceTest {
     public void crearCuentaProfesionalTest() throws CuentaNoCreadaException {
         CrearCuentaProfesionalDTO registrarCuentaProfesional = new CrearCuentaProfesionalDTO(
                 TipoDocumento.CC.getValue(),
-                "4782365489",
+                "4782365",
                 "7425896",
-                "Maria Claudia",
-                "Curtidor",
+                "Maria Paula",
+                "Peña",
                 "Granada",
                 List.of(new ObjectId("66eb9db95e23cd4478146a7b")),
-                "mariacurtidor@gmail.com",
-                "789635"
+                "mariapaula@gmail.com",
+                "12345678"
         );
 
         Cuenta cuentaCreada = cuentaService.crearCuentaProfesional(registrarCuentaProfesional);

@@ -25,7 +25,7 @@ public class AgendaServiceTest {
     @Test
     public void crearAgendaTest() throws AgendaNoCreadaException {
 
-        List<String> medicosString = List.of("66ed977dc1c0830a7e35ae78");
+        List<String> medicosString = List.of("670d94bbcbe55e694871358c");
 
         List<ObjectId> medicos = medicosString.stream()
                 .map(ObjectId::new)
@@ -34,7 +34,7 @@ public class AgendaServiceTest {
         CrearAgendaDTO crearAgendaDTO = new CrearAgendaDTO(
                 medicos,
                 "Medicina General",
-                DuracionAgenda.TREINTA.getValue()
+                DuracionAgenda.VEINTE.getValue()
         );
 
         String mensaje = agendaService.crearAgenda(crearAgendaDTO);

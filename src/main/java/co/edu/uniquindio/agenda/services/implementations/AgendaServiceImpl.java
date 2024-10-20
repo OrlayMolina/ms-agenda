@@ -1,5 +1,6 @@
 package co.edu.uniquindio.agenda.services.implementations;
 
+import co.edu.uniquindio.agenda.controllers.exceptions.cuenta.CuentaNoEncontradaException;
 import co.edu.uniquindio.agenda.dto.agenda.CrearAgendaDTO;
 import co.edu.uniquindio.agenda.dto.agenda.InformacionAgendaDTO;
 import co.edu.uniquindio.agenda.dto.cita.InformacionCitaDTO;
@@ -12,6 +13,7 @@ import co.edu.uniquindio.agenda.models.documents.*;
 import co.edu.uniquindio.agenda.models.enums.EstadoAgenda;
 import co.edu.uniquindio.agenda.models.vo.Profesional;
 import co.edu.uniquindio.agenda.repository.IAgendaRepository;
+import co.edu.uniquindio.agenda.repository.ICuentaRepository;
 import co.edu.uniquindio.agenda.repository.IEspecialidadRepository;
 import co.edu.uniquindio.agenda.services.interfaces.IAgendaService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +30,7 @@ import java.util.Optional;
 public class AgendaServiceImpl implements IAgendaService {
 
     private final IAgendaRepository agendaRepository;
+    private final ICuentaRepository cuentaRepository;
     private final IEspecialidadRepository especialidadRepository;
     private final CitaServiceImpl citaService;
 
@@ -44,7 +48,7 @@ public class AgendaServiceImpl implements IAgendaService {
 
             return "Agenda creada exitosamente.";
         } catch( Exception e){
-            throw new AgendaNoCreadaException("La agenda no fuie creada. " + e.getMessage());
+            throw new AgendaNoCreadaException("La agenda no fue creada. " + e.getMessage());
         }
     }
 
@@ -81,19 +85,19 @@ public class AgendaServiceImpl implements IAgendaService {
     }
 
     @Override
-    public InformacionAgendaDTO obtenerInformacionAgendaPorEspecialidadDTO(String nombreEspecialidad) throws AgendaNoEncontradaException, ProfesionalesNoEncontradosException, EspecialidadNoEncontradaException {
+    public InformacionAgendaDTO obtenerInformacionAgendaPorEspecialidadDTO(String especialidad) throws AgendaNoEncontradaException, ProfesionalesNoEncontradosException, EspecialidadNoEncontradaException {
 
-        Agenda agenda = obtenerAgendaPorNombreEspecialidad( nombreEspecialidad );
+        Agenda agenda = obtenerAgendaPorNombreEspecialidad( especialidad );
 
         return obtenerInformacionAgendaDTO( agenda.getId() );
     }
 
     @Override
-    public InformacionAgendaDTO obtenerInformacionAgendaPorMedicoDTO(String idMedico) throws ProfesionalesNoEncontradosException {
+    public InformacionAgendaDTO obtenerInformacionAgendaPorMedicoDTO(String nombreProfesional) throws AgendaNoEncontradaException, ProfesionalesNoEncontradosException, CuentaNoEncontradaException {
 
-        Profesional profesional = citaService.encontrarProfesionalPorId( idMedico );
+        Agenda agenda = obtenerAgendaPorNombreProfesional( nombreProfesional );
 
-        return null;
+        return obtenerInformacionAgendaDTO( agenda.getId() );
     }
 
     private Agenda encontrarAgendaPorId(String id) throws AgendaNoEncontradaException {
@@ -121,9 +125,27 @@ public class AgendaServiceImpl implements IAgendaService {
         return especialidad.get().getNombre();
     }
 
-    private Agenda obtenerAgendaPorNombreEspecialidad( String nombre ) throws AgendaNoEncontradaException {
+    private Agenda obtenerAgendaPorNombreEspecialidad( String especialidad ) throws AgendaNoEncontradaException {
 
-        Optional<Agenda> agenda = agendaRepository.findAgendaByEspecialidad( nombre );
+        Optional<Agenda> agenda = agendaRepository.findAgendaByEspecialidad( especialidad );
+
+        if( agenda.isEmpty() ) {
+            throw new AgendaNoEncontradaException("Agenda por especialidad no encontrada");
+        }
+
+        return agenda.get();
+    }
+
+    private Agenda obtenerAgendaPorNombreProfesional( String nombre ) throws AgendaNoEncontradaException, CuentaNoEncontradaException {
+
+
+        Optional<Cuenta> cuenta = cuentaRepository.findCuentasByUsuarioNombres( nombre );
+
+        if(cuenta.isEmpty()){
+            throw new CuentaNoEncontradaException("El profesional indicado no fue encontrado. ");
+        }
+
+        Optional<Agenda> agenda = agendaRepository.findAgendaByIdMedico(Collections.singletonList(new ObjectId(cuenta.get().getId())));
 
         if( agenda.isEmpty() ) {
             throw new AgendaNoEncontradaException("Agenda por especialidad no encontrada");

@@ -156,7 +156,7 @@ public class CitaServiceImpl implements ICitaService {
 
         ObjectId objectIdMedico = new ObjectId( idMedico );
         try {
-            Optional<List<Cita>> citas = citaRepository.findCitasByIdMedicoAndEstadoRegistro( objectIdMedico, EstadoRegistro.ACTIVO.getValue() );
+            Optional<List<Cita>> citas = citaRepository.findCitasByIdMedico( objectIdMedico );
 
             if( citas.isEmpty() || citas.get().isEmpty()){
                 throw new CitaNoEncontradaException("Error al buscar las citas del profesional.");

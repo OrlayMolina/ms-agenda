@@ -10,7 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @SpringBootTest
 public class CitaServiceTest {
@@ -20,16 +22,16 @@ public class CitaServiceTest {
     @Test
     public void crearCitaTest() throws CitaNoCreadaException, PacienteNoAfiliadoException {
         CrearCitaDTO registrarCitaDTO = new CrearCitaDTO(
-                "66ed977dc1c0830a7e35ae78",
+                "670d94bbcbe55e694871358c",
                 "66ef7fedbdcb1e524c679d7a",
                 "66ed9b9d33719f5396d8490c",
-                LocalDateTime.of(2024, 9, 14, 16, 00),
+                LocalDateTime.of(2024, 9, 14, 16,30),
                 "Medicina General",
                 "20 Minutos",
                 Consultorio.UNO.getValue(),
                 "Paciente en condiciones aceptables de salud nuevo",
                 "66ef7fedbdcb1e524c679d7a",
-                LocalDateTime.of(2024, 9, 14, 16, 00)
+                LocalDateTime.of(2024, 11, 14, 17, 00)
         );
 
         String mensaje = citaService.crearCitaMedica( registrarCitaDTO );

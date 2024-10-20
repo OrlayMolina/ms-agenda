@@ -122,7 +122,7 @@ public class CuentaServiceImpl implements ICuentaService {
                     codigoAleatorio
             );
 
-            emailService.enviarCorreo( new EmailDTO(cuenta.email(), "Asunto mensaje", body) );
+            emailService.enviarCorreo( new EmailDTO(cuenta.email(), "Activar Cuenta", body) );
 
             return cuentaRepository.save( nuevaCuenta );
         } catch (Exception e){
@@ -213,7 +213,7 @@ public class CuentaServiceImpl implements ICuentaService {
 
             cuenta.setCodigoValidacionPassword(new CodigoValidacion(
                     codigoValidacion,
-                    LocalDateTime.now(ZoneId.of("America/Bogota"))
+                    LocalDateTime.now(ZoneId.systemDefault())
             ));
 
             String body = PlantillasEmailConfig.bodyActualizarPassword.replace("[Codigo_Activacion]", codigoValidacion);
@@ -243,7 +243,7 @@ public class CuentaServiceImpl implements ICuentaService {
                     equals(cambiarPasswordDTO.codigoVerificacion()))
             {
                 if(codigoValidacion.getFechaCreacion().
-                        plusMinutes(15).isBefore(LocalDateTime.now(ZoneId.of("America/Bogota"))))
+                        plusMinutes(15).isAfter(LocalDateTime.now(ZoneId.systemDefault())))
                 {
                     cuenta.setPassword( encriptarPassword(cambiarPasswordDTO.passwordNueva() ));
                     cuentaRepository.save(cuenta);
@@ -332,6 +332,52 @@ public class CuentaServiceImpl implements ICuentaService {
        }
 
        return profesionalesEncontrados.get();
+    }
+
+    @Override
+    public List<PacienteDTO> listaPacientes() throws CuentaNoEncontradaException {
+
+        List<Cuenta> cuentas = cuentaRepository.findAll();
+
+        if(cuentas.isEmpty()){
+            throw new CuentaNoEncontradaException("Los pacientes no pudieron ser cargadas de la base de datos. ");
+        }
+
+        List<PacienteDTO> pacientesDTO = new ArrayList<>();
+        for(Cuenta cuenta : cuentas){
+            if(cuenta.getRol().equals("Paciente de la Clínica")){
+                PacienteDTO pacienteDTO = new PacienteDTO(
+                        cuenta.getId(),
+                        cuenta.getUsuario().getNombres(),
+                        cuenta.getUsuario().getApellidos());
+                pacientesDTO.add(pacienteDTO);
+            }
+        }
+
+        return pacientesDTO;
+    }
+
+    @Override
+    public List<MedicoDTO> listaMedicos() throws CuentaNoEncontradaException {
+
+        List<Cuenta> cuentas = cuentaRepository.findAll();
+
+        if(cuentas.isEmpty()){
+            throw new CuentaNoEncontradaException("Los médicos no pudieron ser cargadas de la base de datos. ");
+        }
+
+        List<MedicoDTO> medicoDTOS = new ArrayList<>();
+        for(Cuenta cuenta : cuentas){
+            if(cuenta.getRol().equals("Profesionales del área de la salud")){
+                MedicoDTO medicoDTO = new MedicoDTO(
+                        cuenta.getId(),
+                        cuenta.getUsuario().getNombres(),
+                        cuenta.getUsuario().getApellidos());
+                medicoDTOS.add(medicoDTO);
+            }
+        }
+
+        return medicoDTOS;
     }
 
     private List<Especialidad> obtenerEspecialidades(Profesional profesional) throws EspecialidadNoEncontradaException {

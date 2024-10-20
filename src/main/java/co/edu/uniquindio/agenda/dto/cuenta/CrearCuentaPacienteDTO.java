@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import org.hibernate.validator.constraints.Length;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record CrearCuentaPacienteDTO(
@@ -19,7 +20,7 @@ public record CrearCuentaPacienteDTO(
         @NotNull Nacionalidad nacionalidad,
         @NotNull
         @Past(message = "La fecha de nacimiento debe ser una fecha pasada")
-        LocalDateTime fechaNacimiento,
+        LocalDate fechaNacimiento,
         @NotNull String departamento,
         @NotNull String ciudad,
         @NotNull String celular,

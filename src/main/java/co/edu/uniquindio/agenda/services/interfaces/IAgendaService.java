@@ -1,5 +1,6 @@
 package co.edu.uniquindio.agenda.services.interfaces;
 
+import co.edu.uniquindio.agenda.controllers.exceptions.cuenta.CuentaNoEncontradaException;
 import co.edu.uniquindio.agenda.dto.agenda.CrearAgendaDTO;
 import co.edu.uniquindio.agenda.dto.agenda.InformacionAgendaDTO;
 import co.edu.uniquindio.agenda.controllers.exceptions.agenda.AgendaNoCreadaException;
@@ -12,5 +13,5 @@ public interface IAgendaService {
     String crearAgenda(CrearAgendaDTO crearAgendaDTO) throws AgendaNoCreadaException;
     InformacionAgendaDTO obtenerInformacionAgendaDTO(String idAgenda) throws AgendaNoEncontradaException, ProfesionalesNoEncontradosException;
     InformacionAgendaDTO obtenerInformacionAgendaPorEspecialidadDTO(String idEspecialidad) throws AgendaNoEncontradaException, ProfesionalesNoEncontradosException, EspecialidadNoEncontradaException;
-    InformacionAgendaDTO obtenerInformacionAgendaPorMedicoDTO(String idMedico) throws AgendaNoEncontradaException, ProfesionalesNoEncontradosException;
+    InformacionAgendaDTO obtenerInformacionAgendaPorMedicoDTO(String idMedico) throws AgendaNoEncontradaException, ProfesionalesNoEncontradosException, CuentaNoEncontradaException;
 }

@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 public class Paciente extends Usuario{
 
     private Nacionalidad nacionalidad;
-    private LocalDateTime fechaNacimiento;
+    private LocalDate fechaNacimiento;
     private String departamento;
     private String ciudad;
     private String celular;
@@ -29,7 +30,7 @@ public class Paciente extends Usuario{
             String nombres,
             String apellidos,
             Nacionalidad nacionalidad,
-            LocalDateTime fechaNacimiento,
+            LocalDate  fechaNacimiento,
             String departamento,
             String ciudad,
             String celular,

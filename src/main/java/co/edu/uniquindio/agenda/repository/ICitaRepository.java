@@ -19,6 +19,6 @@ public interface ICitaRepository extends MongoRepository<Cita, String> {
     @Query("{ 'cita': { $ne: null }, 'cita.idMedico': ?0 }")
     Optional<List<Cita>> findCitasByIdMedico(String id);
 
-    @Query("{ 'idMedico': ?0, 'estadoRegistro': ?1 }")
-    Optional<List<Cita>> findCitasByIdMedicoAndEstadoRegistro(Object idMedico, String estadoRegistro );
+    @Query("{ 'idMedico': ?0 }")
+    Optional<List<Cita>> findCitasByIdMedico(Object idMedico );
 }

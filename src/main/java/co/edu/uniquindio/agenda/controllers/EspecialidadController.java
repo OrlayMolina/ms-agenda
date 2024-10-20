@@ -42,8 +42,5 @@ public class EspecialidadController {
         }
     }
 
-    @GetMapping("/listar-todas")
-    public ResponseEntity<MensajeDTO<List<ItemEspecialidadDTO>>> listarEspecialidadesTodas() throws EspecialidadNoEncontradaException {
-        return ResponseEntity.ok().body( new MensajeDTO<>( false, especialidadService.listarEspecilidades()));
-    }
+
 }

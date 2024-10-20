@@ -18,4 +18,7 @@ public interface ICuentaService {
     TokenDTO iniciarSesion(LoginDTO loginDTO) throws SesionNoIniciadaException;
     List<ItemProfesionalDTO> listarProfesionales() throws ProfesionalesNoEncontradosException;
 
+    List<PacienteDTO> listaPacientes() throws CuentaNoEncontradaException;
+
+    List<MedicoDTO> listaMedicos() throws CuentaNoEncontradaException;
 }

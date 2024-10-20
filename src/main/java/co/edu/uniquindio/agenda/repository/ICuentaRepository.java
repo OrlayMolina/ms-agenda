@@ -17,4 +17,5 @@ public interface ICuentaRepository extends MongoRepository<Cuenta, String> {
     Optional<Cuenta> findByEmail(String email);
     Optional<List<Cuenta>> findCuentasByRol(String rol);
     Optional<Cuenta> findCuentasByIdIs(String id);
+    Optional<Cuenta> findCuentasByUsuarioNombres(String usuarioNombre);
 }
