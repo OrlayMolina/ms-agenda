@@ -28,7 +28,7 @@ public class CuentaController {
 
     private final ICuentaService cuentaService;
     private final IAgendaService agendaService;
-    private final ICitaService citaService; 
+    private final ICitaService citaService;
 
     @Operation(summary = "Listar Profesionales", description = "Permite acceder a todos los atributos del profesional creado en la clínica")
     @GetMapping("/listar-profesionales")
@@ -45,26 +45,6 @@ public class CuentaController {
         } catch (Exception e){
             throw new CuentaNoCreadaException("El paciente no fue creado " + e.getMessage());
         }
-    }
-
-    @GetMapping("/obtener-agendas/{idAgenda}")
-    public ResponseEntity<MensajeDTO<InformacionAgendaDTO>> obtenerAgendas(@PathVariable String idAgenda) throws AgendaNoEncontradaException, ProfesionalesNoEncontradosException {
-        return ResponseEntity.ok().body( new MensajeDTO<>( false, agendaService.obtenerInformacionAgendaDTO( idAgenda )) );
-    }
-
-    @PostMapping("/obtener-agendas-especialidad")
-    public ResponseEntity<MensajeDTO<InformacionAgendaDTO>> obtenerAgendasPorEspecialidad(@RequestBody String especialidad ) throws AgendaNoEncontradaException, EspecialidadNoEncontradaException, ProfesionalesNoEncontradosException {
-        return ResponseEntity.ok().body( new MensajeDTO<>(false, agendaService.obtenerInformacionAgendaPorEspecialidadDTO( especialidad )));
-    }
-
-    @PostMapping("/obtener-agendas-profesional")
-    public ResponseEntity<MensajeDTO<InformacionAgendaDTO>> obtenerAgendasPorProfesional(@RequestBody String nombreProfesional ) throws AgendaNoEncontradaException, EspecialidadNoEncontradaException, ProfesionalesNoEncontradosException, CuentaNoEncontradaException {
-        return ResponseEntity.ok().body( new MensajeDTO<>(false, agendaService.obtenerInformacionAgendaPorMedicoDTO( nombreProfesional )));
-    }
-
-    @PostMapping("/citas/crear-cita")
-    public ResponseEntity<MensajeDTO<String>> crearCitas(@RequestBody CrearCitaDTO crearCitaDTO) throws CitaNoCreadaException, PacienteNoAfiliadoException {
-        return ResponseEntity.ok().body( new MensajeDTO<>( false, citaService.crearCitaMedica(crearCitaDTO)));
     }
 
 }

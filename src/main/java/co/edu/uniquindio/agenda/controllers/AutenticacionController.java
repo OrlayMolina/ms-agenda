@@ -84,7 +84,27 @@ public class AutenticacionController {
     @Operation(summary = "Cambiar Contraseña", description = "Permite cambiar la contraseña")
     @PostMapping("/cambiar-password")
     public ResponseEntity<MensajeDTO<String>> cambiarPassword(@RequestBody CambiarPasswordDTO cambiarPasswordDTO) throws PasswordNoEditadaException {
-        return ResponseEntity.ok().body( new MensajeDTO<>(false, cuentaService.cambiarPassword(cambiarPasswordDTO)) );
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, cuentaService.cambiarPassword(cambiarPasswordDTO)));
+    }
+
+    @GetMapping("/obtener-agendas/{idAgenda}")
+    public ResponseEntity<MensajeDTO<InformacionAgendaDTO>> obtenerAgendas(@PathVariable String idAgenda) throws AgendaNoEncontradaException, ProfesionalesNoEncontradosException {
+        return ResponseEntity.ok().body( new MensajeDTO<>( false, agendaService.obtenerInformacionAgendaDTO( idAgenda )) );
+    }
+
+    @PostMapping("/obtener-agendas-especialidad")
+    public ResponseEntity<MensajeDTO<InformacionAgendaDTO>> obtenerAgendasPorEspecialidad(@RequestBody String especialidad ) throws AgendaNoEncontradaException, EspecialidadNoEncontradaException, ProfesionalesNoEncontradosException {
+        return ResponseEntity.ok().body( new MensajeDTO<>(false, agendaService.obtenerInformacionAgendaPorEspecialidadDTO( especialidad )));
+    }
+
+    @PostMapping("/obtener-agendas-profesional")
+    public ResponseEntity<MensajeDTO<InformacionAgendaDTO>> obtenerAgendasPorProfesional(@RequestBody String nombreProfesional ) throws AgendaNoEncontradaException, EspecialidadNoEncontradaException, ProfesionalesNoEncontradosException, CuentaNoEncontradaException {
+        return ResponseEntity.ok().body( new MensajeDTO<>(false, agendaService.obtenerInformacionAgendaPorMedicoDTO( nombreProfesional )));
+    }
+
+    @PostMapping("/citas/crear-cita")
+    public ResponseEntity<MensajeDTO<String>> crearCitas(@RequestBody CrearCitaDTO crearCitaDTO) throws CitaNoCreadaException, PacienteNoAfiliadoException {
+        return ResponseEntity.ok().body( new MensajeDTO<>( false, citaService.crearCitaMedica(crearCitaDTO)));
     }
 
     @GetMapping("/sedes/lista-sedes")

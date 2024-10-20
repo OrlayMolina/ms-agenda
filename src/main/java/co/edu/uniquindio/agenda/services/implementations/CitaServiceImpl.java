@@ -1,11 +1,13 @@
 package co.edu.uniquindio.agenda.services.implementations;
 
+import co.edu.uniquindio.agenda.config.PlantillasEmailConfig;
 import co.edu.uniquindio.agenda.controllers.exceptions.cita.*;
 import co.edu.uniquindio.agenda.dto.cita.*;
 import co.edu.uniquindio.agenda.controllers.exceptions.cuenta.CuentaNoEncontradaException;
 import co.edu.uniquindio.agenda.controllers.exceptions.cuenta.ProfesionalesNoEncontradosException;
 import co.edu.uniquindio.agenda.controllers.exceptions.especialidad.EspecialidadNoEncontradaException;
 import co.edu.uniquindio.agenda.controllers.exceptions.sede.SedeNoEncontradaException;
+import co.edu.uniquindio.agenda.dto.email.EmailDTO;
 import co.edu.uniquindio.agenda.models.documents.Cita;
 import co.edu.uniquindio.agenda.models.documents.Cuenta;
 import co.edu.uniquindio.agenda.models.documents.Especialidad;
@@ -20,6 +22,7 @@ import co.edu.uniquindio.agenda.repository.ICuentaRepository;
 import co.edu.uniquindio.agenda.repository.IEspecialidadRepository;
 import co.edu.uniquindio.agenda.repository.ISedeRepository;
 import co.edu.uniquindio.agenda.services.interfaces.ICitaService;
+import co.edu.uniquindio.agenda.services.interfaces.IEmailService;
 import co.edu.uniquindio.agenda.utils.GenerarCodigo;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
@@ -29,6 +32,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -38,6 +42,7 @@ public class CitaServiceImpl implements ICitaService {
     private final ICuentaRepository cuentaRepository;
     private final ICitaRepository citaRepository;
     private final ISedeRepository sedeRepository;
+    private final IEmailService emailService;
     private final IEspecialidadRepository especialidadRepository;
     private final GenerarCodigo generarCodigo;
     @Override
@@ -65,6 +70,22 @@ public class CitaServiceImpl implements ICitaService {
             crearCita.setEstadoRegistro( EstadoRegistro.ACTIVO.getValue() );
             crearCita.setUsuarioCreacion( objectUsuario );
             crearCita.setFechaCreacion( crearCitaDTO.fechaCreacion() );
+
+            Optional<Sede> sede = sedeRepository.findById( crearCitaDTO.idSede() );
+            Optional<Cuenta> cuentaPaciente = cuentaRepository.findById( crearCitaDTO.idPaciente() );
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+            String fechaCita = crearCitaDTO.fechaCita().format(dateFormatter);
+
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a", new Locale("es", "ES"));
+            String horaCita = crearCitaDTO.fechaCita().format(formatter);
+
+            String body = PlantillasEmailConfig.bodyNotificacionCita.replace("[especialidad]",
+                    crearCitaDTO.especialidad()).replace("[fecha_cita]", fechaCita
+                    ).replace("[hora_cita]", horaCita).replace("[sede]",
+                    sede.get().getNombre()).replace("[consultorio]", crearCitaDTO.consultorio() );
+
+            emailService.enviarCorreo( new EmailDTO(cuentaPaciente.get().getEmail(), "Cita Asignada", body) );
 
             citaRepository.save( crearCita );
 
